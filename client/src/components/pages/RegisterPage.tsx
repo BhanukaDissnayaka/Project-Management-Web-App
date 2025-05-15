@@ -33,7 +33,7 @@ const formSchema = z
     path: ["confirmPassword"],
   });
 
-export function RegisterForm() {
+export function RegisterPage() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
