@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
+import { RegisterForm } from "./components/pages/RegisterPage";
 
 function App() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-svh">
-      <Button>Click me</Button>
+    <div className="items-center justify-center ">
+      <RegisterForm></RegisterForm>
     </div>
   );
 }
