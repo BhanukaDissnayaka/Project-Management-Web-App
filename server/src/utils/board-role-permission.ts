@@ -1,0 +1,49 @@
+import {
+  BoardPermissionType,
+  BoardPermissions,
+  BoardRoleType,
+} from "../enums/board-role.enum";
+
+export const BoardRolePermissions: Record<
+  BoardRoleType,
+  Array<BoardPermissionType>
+> = {
+  BOARD_ADMIN: [
+    BoardPermissions.EDIT_BOARD,
+    BoardPermissions.ADD_BOARD_MEMBER,
+    BoardPermissions.CHANGE_BOARD_MEMBER_ROLE,
+    BoardPermissions.REMOVE_BOARD_MEMBER,
+    BoardPermissions.CREATE_LIST,
+    BoardPermissions.EDIT_LIST,
+    BoardPermissions.DELETE_LIST,
+    BoardPermissions.CREATE_CARD,
+    BoardPermissions.EDIT_CARD,
+    BoardPermissions.DELETE_CARD,
+    BoardPermissions.ADD_CARD_MEMBER,
+    BoardPermissions.REMOVE_CARD_MEMBER,
+    BoardPermissions.ADD_CARD_LABELS,
+    BoardPermissions.DELETE_CARD_LABELS,
+    BoardPermissions.CHANGE_CARD_DUE_DATE,
+    BoardPermissions.CREATE_CHECKITEM,
+    BoardPermissions.UPDATE_CHECKITEM,
+    BoardPermissions.DELETE_CHECKITEM,
+    BoardPermissions.ASSIGN_CHECKITEM_TO_CARD_MEMBER,
+  ],
+  BOARD_MEMBER: [
+    BoardPermissions.CREATE_LIST,
+    BoardPermissions.EDIT_LIST,
+    BoardPermissions.DELETE_LIST,
+    BoardPermissions.CREATE_CARD,
+    BoardPermissions.EDIT_CARD,
+    BoardPermissions.DELETE_CARD,
+    BoardPermissions.ADD_CARD_MEMBER,
+    BoardPermissions.REMOVE_CARD_MEMBER,
+    BoardPermissions.ADD_CARD_LABELS,
+    BoardPermissions.DELETE_CARD_LABELS,
+    BoardPermissions.CHANGE_CARD_DUE_DATE,
+    BoardPermissions.CREATE_CHECKITEM,
+    BoardPermissions.UPDATE_CHECKITEM,
+    BoardPermissions.DELETE_CHECKITEM,
+    BoardPermissions.ASSIGN_CHECKITEM_TO_CARD_MEMBER,
+  ],
+};
