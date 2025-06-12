@@ -33,7 +33,7 @@ const formSchema = z
     path: ["confirmPassword"],
   });
 
-export function RegisterPage() {
+export function SignUp() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -48,7 +48,9 @@ export function RegisterPage() {
     console.log(values);
     // Handle registration logic here
   }
-
+  const handleClick = () => {
+    window.location.href = `http://localhost:5000/api/auth/google`;
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <Card className="w-full max-w-md mx-auto shadow-lg">
@@ -159,7 +161,11 @@ export function RegisterPage() {
               </div>
             </div>
 
-            <Button variant="outline" className="w-full mt-4">
+            <Button
+              variant="outline"
+              className="w-full mt-4"
+              onClick={handleClick}
+            >
               <img
                 src="https://www.svgrepo.com/show/475656/google-color.svg"
                 alt="Google"

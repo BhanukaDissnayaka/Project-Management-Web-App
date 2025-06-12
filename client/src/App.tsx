@@ -1,14 +1,7 @@
-import { RegisterPage } from "./components/pages/RegisterPage";
-import { Routes, Route } from "react-router-dom";
+import AppRoutes from "./routes";
 
 function App() {
-  return (
-    <div className="items-center justify-center ">
-      <Routes>
-        <Route path="/register" element={<RegisterPage />} />
-      </Routes>
-    </div>
-  );
+  return <AppRoutes />;
 }
 
 export default App;
