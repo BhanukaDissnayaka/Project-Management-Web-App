@@ -9,6 +9,11 @@ type AppConfig = {
   MONGO_URI: string;
   JWT_SECRET: string;
   JWT_EXPIRES_IN: string;
+  GOOGLE_CLIENT_ID: string;
+  GOOGLE_CLIENT_SECRET: string;
+  GOOGLE_CALLBACK_URL: string;
+  FRONTEND_ORIGIN: string;
+  FRONTEND_GOOGLE_CALLBACK_URL: string;
 };
 
 const appConfig = (): AppConfig => ({
@@ -18,6 +23,11 @@ const appConfig = (): AppConfig => ({
   MONGO_URI: process.env.MONGO_URI || "",
   JWT_SECRET: process.env.JWT_SECRET || "supersecret",
   JWT_EXPIRES_IN: "7d",
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || "",
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET || "",
+  GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL || "",
+  FRONTEND_ORIGIN: process.env.FRONTEND_ORIGIN || "",
+  FRONTEND_GOOGLE_CALLBACK_URL: process.env.FRONTEND_GOOGLE_CALLBACK_URL || "",
 });
 
 export const config = appConfig();
