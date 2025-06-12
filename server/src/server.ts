@@ -2,11 +2,15 @@ import express from "express";
 import authRouter from "./routes/auth.route";
 import { connectDB } from "./config/db";
 import { config } from "./config/app.config";
+import { errorHandler } from "./middlewares/errorHandler.middleware";
 
 const app = express();
 const BASE_PATH = config.BASE_PATH;
 
 app.use(`${BASE_PATH}/auth/`, authRouter);
+
+// global error handler - must be last
+app.use(errorHandler);
 
 const startServer = async () => {
   await connectDB();
