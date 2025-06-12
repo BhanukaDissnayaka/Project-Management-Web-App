@@ -1,4 +1,4 @@
-import { SignUp } from "@/components/pages/RegisterPage";
+import { SignUp } from "@/pages/auth/sign-up";
 import { AUTH_ROUTES } from "./routePaths";
 
 export const authenticationRoutePaths = [
