@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import GoogleOauthButton from "../auth/google-oauth-button";
 
 // Form schema validation
 const formSchema = z
@@ -52,7 +53,7 @@ export function SignUp() {
     window.location.href = `http://localhost:5000/api/auth/google`;
   };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md mx-auto shadow-lg">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -160,19 +161,7 @@ export function SignUp() {
                 </span>
               </div>
             </div>
-
-            <Button
-              variant="outline"
-              className="w-full mt-4"
-              onClick={handleClick}
-            >
-              <img
-                src="https://www.svgrepo.com/show/475656/google-color.svg"
-                alt="Google"
-                className="w-5 h-5"
-              />
-              Sign up with Google
-            </Button>
+            <GoogleOauthButton label="Signup" />
           </div>
 
           <p className="mt-4 text-center text-sm text-muted-foreground">
