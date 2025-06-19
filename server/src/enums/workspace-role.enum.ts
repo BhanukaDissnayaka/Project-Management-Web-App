@@ -1,0 +1,23 @@
+export const WorkspaceRoles = {
+  OWNER: "OWNER",
+  ADMIN: "ADMIN",
+  MEMBER: "MEMBER",
+} as const;
+
+export type WorkspaceRoleType = keyof typeof WorkspaceRoles;
+
+export const WorkspacePermissions = {
+  CREATE_WORKSPACE: "CREATE_WORKSPACE",
+  EDIT_WORKSPACE: "EDIT_WORKSPACE",
+  DELETE_WORKSPACE: "DELETE_WORKSPACE",
+  MANAGE_WORKSPACE_SETTINGS: "MANAGE_WORKSPACE_SETTINGS",
+
+  ADD_WORKSPACE_MEMBER: "ADD_WORKSPACE_MEMBER",
+  CHANGE_WORKSPACE_MEMBER_ROLE: "CHANGE_WORKSPACE_MEMBER_ROLE",
+  REMOVE_WORKSPACE_MEMBER: "REMOVE_WORKSPACE_MEMBER",
+
+  CREATE_BOARD: "CREATE_BOARD",
+  VIEW_ALL_BOARDS: "VIEW_ALL_BOARDS",
+} as const;
+
+export type WorkspacePermissionType = keyof typeof WorkspacePermissions;
