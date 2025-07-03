@@ -19,15 +19,21 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import GoogleOauthButton from "../../components/auth/google-oauth-button";
+import GoogleOauthButton from "../../features/authentication/components/google-oauth-button";
+import { useRegisterMutation } from "@/features/authentication/api/auth.api";
+import { useNavigate } from "react-router-dom";
+import { showErrorToast, showSuccessToast } from "@/lib/toastHandler";
 
 export function SignUp() {
+  const [register, { isLoading }] = useRegisterMutation();
+  const navigate = useNavigate();
+
   // Form schema validation
   const formSchema = z
     .object({
-      fullName: z.string().min(2, "Name must be at least 2 characters"),
+      name: z.string().min(2, "Name must be at least 2 characters"),
       email: z.string().email("Invalid email address"),
-      password: z.string().min(8, "Password must be at least 8 characters"),
+      password: z.string().min(4, "Password must be at least 8 characters"),
       confirmPassword: z.string(),
     })
     .refine((data) => data.password === data.confirmPassword, {
@@ -38,22 +44,29 @@ export function SignUp() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullName: "",
+      name: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    // Handle registration logic here
-  }
-
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const res = await register(values).unwrap();
+      showSuccessToast(res.message || "Registration successfull");
+      navigate(`/workspace/${res.user.currentWorkspace}`);
+    } catch (err: any) {
+      showErrorToast(err?.data?.message || "Registration failed");
+    }
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md mx-auto shadow-lg">
         <CardHeader className="text-center">
+          <CardTitle className="text-3xl font-bold text-primary ">
+            ProjectPilot
+          </CardTitle>
           <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">
             Create your account
           </CardTitle>
@@ -68,7 +81,7 @@ export function SignUp() {
               <div className="space-y-4">
                 <FormField
                   control={form.control}
-                  name="fullName"
+                  name="name"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Full Name</FormLabel>
@@ -142,6 +155,7 @@ export function SignUp() {
               <Button
                 type="submit"
                 className="w-full bg-primary hover:bg-primary/90"
+                disabled={isLoading}
               >
                 Sign Up
               </Button>
@@ -164,7 +178,11 @@ export function SignUp() {
 
           <p className="mt-4 text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Button variant="link" className="p-0 text-primary">
+            <Button
+              variant="link"
+              className="p-0 text-primary"
+              disabled={isLoading}
+            >
               Sign in
             </Button>
           </p>
