@@ -6,3 +6,15 @@ export type AuthStateType = {
   isAuthenticated: boolean;
   isLoading: boolean;
 };
+
+export type RegisterType = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword?: string;
+};
+
+export type RegisterResponseType = {
+  message: string;
+  user: UserType;
+};
