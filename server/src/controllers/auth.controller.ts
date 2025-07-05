@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../middlewares/asyncHandler";
 import { config } from "../config/app.config";
 import { generateToken } from "../utils/jwt";
+import { registerSchema } from "../validation/auth.validation";
+import { registerUserService } from "../services/auth.service";
+import { HTTPSTATUS } from "../config/http.config";
 
 export const handleGoogleCallback = asyncHandler(
   async (req: Request, res: Response) => {
@@ -21,5 +24,25 @@ export const handleGoogleCallback = asyncHandler(
     return res.redirect(
       `${config.FRONTEND_ORIGIN}/workspace/${user.currentWorkspace}`
     );
+  }
+);
+
+export const registerUserController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const body = registerSchema.parse({
+      ...req.body,
+    });
+    const user = await registerUserService(body);
+    const token = generateToken({ userId: user._id, email: user.email });
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== "development",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+    return res.status(HTTPSTATUS.CREATED).json({
+      message: "User created successfully",
+      user,
+    });
   }
 );
