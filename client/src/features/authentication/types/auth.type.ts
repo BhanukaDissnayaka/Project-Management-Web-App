@@ -18,3 +18,13 @@ export type RegisterResponseType = {
   message: string;
   user: UserType;
 };
+
+export type LoginType = {
+  email: string;
+  password: string;
+};
+
+export type LoginResponseType = {
+  message: string;
+  user: UserType;
+};
