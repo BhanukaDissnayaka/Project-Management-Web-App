@@ -136,9 +136,15 @@ export function SignIn() {
 
           <p className="mt-4 text-center text-sm text-muted-foreground">
             Don't have an account?
-            <Link to="/sign-up" className="underline underline-offset-4">
-              Sign up
-            </Link>
+            <Button
+              variant="link"
+              className="p-0 text-primary ml-1"
+              disabled={isLoading}
+            >
+              <Link to="/sign-up" className="underline underline-offset-4">
+                Sign up
+              </Link>
+            </Button>
           </p>
         </CardContent>
       </Card>
