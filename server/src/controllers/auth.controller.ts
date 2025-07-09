@@ -2,8 +2,11 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../middlewares/asyncHandler";
 import { config } from "../config/app.config";
 import { generateToken } from "../utils/jwt";
-import { registerSchema } from "../validation/auth.validation";
-import { registerUserService } from "../services/auth.service";
+import { loginSchema, registerSchema } from "../validation/auth.validation";
+import {
+  loginUserService,
+  registerUserService,
+} from "../services/auth.service";
 import { HTTPSTATUS } from "../config/http.config";
 
 export const handleGoogleCallback = asyncHandler(
@@ -42,6 +45,26 @@ export const registerUserController = asyncHandler(
     });
     return res.status(HTTPSTATUS.CREATED).json({
       message: "User created successfully",
+      user,
+    });
+  }
+);
+
+export const loginUserController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const body = loginSchema.parse({
+      ...req.body,
+    });
+    const user = await loginUserService(body);
+    const token = generateToken({ userId: user._id, email: user.email });
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== "development",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+    return res.status(HTTPSTATUS.OK).json({
+      message: "Logged in successfully",
       user,
     });
   }
