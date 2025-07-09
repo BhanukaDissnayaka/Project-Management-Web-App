@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, mongo } from "mongoose";
-import { hashValue } from "../utils/bcrypt";
+import { compareValue, hashValue } from "../utils/bcrypt";
 
 export interface UserDocument extends Document {
   name: string;
@@ -11,6 +11,8 @@ export interface UserDocument extends Document {
   createdAt: Date;
   updatedAt: Date;
   currentWorkspace: mongoose.Types.ObjectId | null;
+  comparePassword(value: string): Promise<boolean>;
+  omitPassword(): Omit<UserDocument, "password">;
 }
 
 const userSchema = new Schema<UserDocument>(
@@ -27,7 +29,7 @@ const userSchema = new Schema<UserDocument>(
       trim: true,
       lowercase: true,
     },
-    password: { type: String, select: false },
+    password: { type: String, select: true },
     profilePicture: {
       type: String,
       default: null,
@@ -52,6 +54,16 @@ userSchema.pre("save", async function (next) {
   }
   next();
 });
+
+userSchema.methods.omitPassword = function (): Omit<UserDocument, "password"> {
+  const userObject = this.toObject();
+  delete userObject.password;
+  return userObject;
+};
+
+userSchema.methods.comparePassword = async function (value: string) {
+  return compareValue(value, this.password);
+};
 
 const UserModel = mongoose.model<UserDocument>("User", userSchema);
 export default UserModel;
