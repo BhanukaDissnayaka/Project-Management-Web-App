@@ -1,6 +1,7 @@
 import express from "express";
 import {
   handleGoogleCallback,
+  loginUserController,
   registerUserController,
 } from "../controllers/auth.controller";
 import passport from "passport";
@@ -19,4 +20,6 @@ authRoutes.get(
 );
 
 authRoutes.post("/register", registerUserController);
+authRoutes.post("/login", loginUserController);
+
 export default authRoutes;
