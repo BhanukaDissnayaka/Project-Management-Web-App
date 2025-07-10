@@ -6,12 +6,14 @@ import "./config/passport.config";
 import passport from "passport";
 import cors from "cors";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
+import cookieParser from "cookie-parser";
 
 const app = express();
 const BASE_PATH = config.BASE_PATH;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.use(passport.initialize());
 
