@@ -7,6 +7,8 @@ import passport from "passport";
 import cors from "cors";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
 import cookieParser from "cookie-parser";
+import isAuthenticated from "./middlewares/isAuthenticated.middleware";
+import userRoutes from "./routes/user.route";
 
 const app = express();
 const BASE_PATH = config.BASE_PATH;
@@ -25,6 +27,7 @@ app.use(
 );
 
 app.use(`${BASE_PATH}/auth/`, authRoutes);
+app.use(`${BASE_PATH}/user/`, isAuthenticated, userRoutes);
 
 // global error handler - must be last
 app.use(errorHandler);
