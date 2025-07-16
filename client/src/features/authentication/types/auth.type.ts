@@ -28,3 +28,7 @@ export type LoginResponseType = {
   message: string;
   user: UserType;
 };
+export type CurrentUserResponseType = {
+  message: string;
+  user: UserType;
+};
