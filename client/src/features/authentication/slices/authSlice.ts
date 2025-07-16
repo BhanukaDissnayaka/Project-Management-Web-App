@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { AuthStateType } from "../types/auth.type";
-import type { UserType } from "@/types/api.type";
+import type { AuthPayloadType, AuthStateType } from "../types/auth.type";
+import { authApi } from "../api/auth.api";
 
 const initialState: AuthStateType = {
   user: null,
@@ -13,10 +13,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setCredentials: (
-      state,
-      action: PayloadAction<{ user: UserType; accessToken: string }>
-    ) => {
+    setCredentials: (state, action: PayloadAction<AuthPayloadType>) => {
       state.user = action.payload.user;
       state.isAuthenticated = true;
     },
@@ -27,6 +24,14 @@ const authSlice = createSlice({
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      authApi.endpoints.getCurrentUser.matchFulfilled,
+      (state, { payload }) => {
+        state.user = payload.user;
+      }
+    );
   },
 });
 export default authSlice.reducer;

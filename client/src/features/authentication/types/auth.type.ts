@@ -14,17 +14,17 @@ export type RegisterType = {
   confirmPassword?: string;
 };
 
-export type RegisterResponseType = {
-  message: string;
-  user: UserType;
-};
-
 export type LoginType = {
   email: string;
   password: string;
 };
 
-export type LoginResponseType = {
+export type AuthResponseBaseType = {
   message: string;
   user: UserType;
 };
+
+export type RegisterResponseType = AuthResponseBaseType;
+export type LoginResponseType = AuthResponseBaseType;
+export type CurrentUserResponseType = AuthResponseBaseType;
+export type AuthPayloadType = AuthResponseBaseType;

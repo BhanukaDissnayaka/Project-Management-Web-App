@@ -1,18 +1,21 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { isAuthRoute } from "./common/routePaths";
+import { useGetCurrentUserQuery } from "@/features/authentication/api/auth.api";
 
 const AuthRoute = () => {
   const location = useLocation();
   const _isAuthRoute = isAuthRoute(location.pathname);
 
-  // TODO: If this is not an auth route, render fallback UI like a dashboard loader
-  if (!_isAuthRoute) return null;
+  const { data: authData, isLoading } = useGetCurrentUserQuery();
+  const user = authData?.user;
 
-  // TODO: Check if user is logged in
-  // If user is not logged in, allow rendering child routes (login/register)
-  // If user is logged in, redirect to current workspace
+  if (!_isAuthRoute && isLoading) return <h1>Loading</h1>;
 
-  return <Outlet />;
+  if (!user) return <Outlet />;
+
+  // ! Todo - Handle the case where currentWorkspace is missing
+
+  return <Navigate to={`workspace/${user.currentWorkspace?._id}`} replace />;
 };
 
 export default AuthRoute;
