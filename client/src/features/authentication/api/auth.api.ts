@@ -1,5 +1,6 @@
 import { baseApi } from "@/api/baseApi";
 import type {
+  CurrentUserResponseType,
   LoginResponseType,
   LoginType,
   RegisterResponseType,
@@ -22,7 +23,14 @@ export const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+    getCurrentUser: builder.query<CurrentUserResponseType, void>({
+      query: () => ({
+        url: "/user/current",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation } = authApi;
+export const { useRegisterMutation, useLoginMutation, useGetCurrentUserQuery } =
+  authApi;
