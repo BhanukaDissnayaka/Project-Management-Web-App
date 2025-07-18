@@ -91,6 +91,7 @@
   --gray-muted: oklch(0.71 0.0192 261.32); /*gray400*/
   --gray-text: oklch(0.45 0.0263 256.8); /*gray600*/
   --gray-hover: oklch(0.87 0.0093 258.34); /*gray300*/
+  --gray-border: oklch(0.9491 0 0); /*gray200*/
 }
 
 .dark {
@@ -132,8 +133,9 @@
   --blue-muted: oklch(0.88 0.0571 254.13); /*blue200*/
 
   --gray-muted: oklch(0.71 0.0192 261.32); /*gray400*/
-  --gray-text: oklch(0.55 0.0234 264.36); /*gray500*/
+  --gray-text: oklch(0.9491 0 0); /*gray200*/
   --gray-hover: oklch(0.28 0.0296 256.85); /*gray800*/
+  --gray-border: oklch(0.9491 0 0); /*gray200*/
 }
 
 @layer base {
