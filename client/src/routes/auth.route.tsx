@@ -11,7 +11,7 @@ const AuthRoute = () => {
 
   // ! Todo - Handle the case where currentWorkspace is missing
 
-  return <Navigate to={`workspace/${user.currentWorkspace?._id}`} replace />;
+  return <Navigate to={`workspace/${user.currentWorkspace}`} replace />;
 };
 
 export default AuthRoute;
