@@ -10,3 +10,7 @@ export type WorkspaceByIdResponseType = {
   workspace: WorkspaceType;
   message: string;
 };
+export type AllWorkspaceResponseType = {
+  workspaces: WorkspaceType[];
+  message: string;
+};

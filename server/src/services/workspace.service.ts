@@ -24,3 +24,12 @@ export const getWorkspaceByIdService = async (
   };
   return { workspace: workspaceWithCurrentMember };
 };
+
+export const getAllWorkspacesUserIsMemberService = async (userId: string) => {
+  const memberships = await WorkspaceMemberModel.find({ userId })
+    .populate("workspaceId")
+    .select("-password")
+    .exec();
+  const workspaces = memberships.map((membership) => membership.workspaceId);
+  return { workspaces };
+};

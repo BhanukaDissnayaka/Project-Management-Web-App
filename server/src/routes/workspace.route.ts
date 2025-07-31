@@ -1,7 +1,12 @@
 import { Router } from "express";
-import { getWorkspaceByIdController } from "../controllers/workspace.controller";
+import {
+  getAllWorkspacesUserIsMemberController,
+  getWorkspaceByIdController,
+} from "../controllers/workspace.controller";
 
 const workspaceRoutes = Router();
+
+workspaceRoutes.get("/all", getAllWorkspacesUserIsMemberController);
 
 workspaceRoutes.get("/:id", getWorkspaceByIdController);
 

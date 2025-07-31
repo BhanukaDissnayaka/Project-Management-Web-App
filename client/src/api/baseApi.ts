@@ -4,6 +4,6 @@ import { customFetchBaseQuery } from "./customFetchBaseQuery";
 export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: customFetchBaseQuery,
-  tagTypes: ["Auth", "User", "Workspace", "Board"],
+  tagTypes: ["Auth", "User", "Workspace", "WorkspaceList", "Board"],
   endpoints: () => ({}),
 });
