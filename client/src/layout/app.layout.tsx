@@ -7,6 +7,12 @@ import { useEffect } from "react";
 import NotFound from "@/components/shared/NotFound";
 import MainLoader from "@/components/shared/MainLoader";
 import Forbidden from "@/components/shared/Forbidden";
+import { AppSidebar } from "@/components/shared/app-sidebar/AppSidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 
 const AppLayout = () => {
   const workspaceId = useWorkspaceId();
@@ -46,11 +52,17 @@ const AppLayout = () => {
   }
 
   return (
-    <div className="w-full">
-      <div className="px-3 lg:px-20 py-3">
-        <Outlet />
-      </div>
-    </div>
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <div className="w-full">
+          <SidebarTrigger className="text-gray-text" />
+          <div className="px-3 lg:px-20 py-3">
+            <Outlet />
+          </div>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 };
 
