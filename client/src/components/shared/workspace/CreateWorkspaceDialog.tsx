@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateWorkspaceMutation } from "@/features/workspace/api/workspace.api";
+import useCreateWorkspaceDialog from "@/hooks/useCreateWorkspaceDisalog";
 import { showErrorToast, showSuccessToast } from "@/lib/toastHandler";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
@@ -26,9 +27,7 @@ import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 function CreateWorkspaceDialog() {
-  // todo - must replace open with useCreateWorkspace custom hook
-  const open = false;
-
+  const { open, onClose } = useCreateWorkspaceDialog();
   const navigate = useNavigate();
   const formSchema = z.object({
     name: z.string().trim().min(1, {
@@ -51,6 +50,7 @@ function CreateWorkspaceDialog() {
     try {
       const res = await createWorkspace(values).unwrap();
       form.reset();
+      onClose();
       showSuccessToast(res.message || "Workspace created successfully");
       navigate(`/workspace/${res.workspace?._id}`);
     } catch (err: any) {
@@ -60,7 +60,7 @@ function CreateWorkspaceDialog() {
   };
 
   return (
-    <Dialog modal={true} open={open}>
+    <Dialog modal={true} open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Let's build a Workspace</DialogTitle>
