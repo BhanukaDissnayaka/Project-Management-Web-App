@@ -1,6 +1,8 @@
 import { baseApi } from "@/api/baseApi";
 import type {
   AllWorkspaceResponseType,
+  CreateWorkspaceResponseType,
+  CreateWorkspaceType,
   WorkspaceByIdResponseType,
 } from "../types/workspace.type";
 
@@ -26,10 +28,24 @@ export const workspaceApi = baseApi.injectEndpoints({
         providesTags: [{ type: "WorkspaceList" }],
       }
     ),
+
+    // create workspace
+    createWorkspace: builder.mutation<
+      CreateWorkspaceResponseType,
+      CreateWorkspaceType
+    >({
+      query: (body) => ({
+        url: `workspace/create/new`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["WorkspaceList"],
+    }),
   }),
 });
 
 export const {
   useGetWorkspaceByIdQuery,
   useGetAllWorkspacesUserIsMemberQuery,
+  useCreateWorkspaceMutation,
 } = workspaceApi;
