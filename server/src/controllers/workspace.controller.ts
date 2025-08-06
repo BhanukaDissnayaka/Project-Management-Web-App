@@ -1,12 +1,28 @@
 import { asyncHandler } from "../middlewares/asyncHandler";
 import { Request, Response } from "express";
 import {
+  createWorkspaceService,
   getAllWorkspacesUserIsMemberService,
   getWorkspaceByIdService,
 } from "../services/workspace.service";
 import { HTTPSTATUS } from "../config/http.config";
-import { workspaceIdSchema } from "../validation/workspace.validation";
+import {
+  createWorkspaceSchema,
+  workspaceIdSchema,
+} from "../validation/workspace.validation";
 import { getMemberInWorkspaceService } from "../services/member.service";
+
+export const createWorkspaceController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const body = createWorkspaceSchema.parse(req.body);
+    const userId = req.user?._id;
+    const { workspace } = await createWorkspaceService(userId, body);
+    return res.status(HTTPSTATUS.CREATED).json({
+      message: "Workspace created successfully",
+      workspace,
+    });
+  }
+);
 
 export const getWorkspaceByIdController = asyncHandler(
   async (req: Request, res: Response) => {
