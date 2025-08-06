@@ -13,6 +13,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import CreateWorkspaceDialog from "@/components/shared/workspace/CreateWorkspaceDialog";
 
 const AppLayout = () => {
   const workspaceId = useWorkspaceId();
@@ -60,6 +61,7 @@ const AppLayout = () => {
           <div className="px-3 lg:px-20 py-3">
             <Outlet />
           </div>
+          <CreateWorkspaceDialog />
         </div>
       </SidebarInset>
     </SidebarProvider>

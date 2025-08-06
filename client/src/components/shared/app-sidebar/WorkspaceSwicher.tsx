@@ -21,6 +21,7 @@ import { TextWrapper } from "../TextWrapper";
 import useWorkspaceId from "@/hooks/useWorkspaceId";
 import { useNavigate } from "react-router-dom";
 import { useGetAllWorkspacesUserIsMemberQuery } from "@/features/workspace/api/workspace.api";
+import useCreateWorkspaceDialog from "@/hooks/useCreateWorkspaceDisalog";
 type WorkspaceType = {
   _id: string;
   name: string;
@@ -28,6 +29,8 @@ type WorkspaceType = {
 
 export const WorkspaceSwicher = () => {
   const navigate = useNavigate();
+  const { onOpen } = useCreateWorkspaceDialog();
+
   const workspaceId = useWorkspaceId();
   const { isMobile } = useSidebar();
 
@@ -56,7 +59,10 @@ export const WorkspaceSwicher = () => {
     <>
       <SidebarGroupLabel className="w-full justify-between pr-0">
         <span>Workspaces</span>
-        <button className="flex size-5 items-center justify-center rounded-full border">
+        <button
+          onClick={onOpen}
+          className="flex size-5 items-center justify-center rounded-full border"
+        >
           <Plus className="size-3.5" />
         </button>
       </SidebarGroupLabel>
@@ -124,7 +130,10 @@ export const WorkspaceSwicher = () => {
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2 !cursor-pointer justify-left">
+            <DropdownMenuItem
+              className="gap-2 p-2 !cursor-pointer justify-left"
+              onClick={onOpen}
+            >
               <div className="flex items-center  gap-2 text-gray-text">
                 <Plus />
                 <TextWrapper fontWeight="semibold" className="leading-tight">
