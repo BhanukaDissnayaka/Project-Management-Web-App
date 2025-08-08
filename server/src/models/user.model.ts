@@ -55,6 +55,8 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+userSchema.index({ name: "text", email: "text" });
+
 userSchema.methods.omitPassword = function (): Omit<UserDocument, "password"> {
   const userObject = this.toObject();
   delete userObject.password;
