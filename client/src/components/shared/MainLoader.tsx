@@ -1,23 +1,30 @@
 type MainLoaderPropsType = {
   message?: string;
   size?: number;
+  fullPage?: boolean; // whether to cover the full screen
+  className?: string; // extra tailwind classes
 };
 
 const MainLoader = ({
   message = "Loading...",
   size = 50,
+  fullPage = false,
+  className = "",
 }: MainLoaderPropsType) => {
   return (
-    <div className="flex flex-col items-center justify-center h-screen w-full bg-background">
-      <div className="corner-pulse-loader mb-4" />
-      <p className="text-muted-foreground text-sm">{message}</p>
+    <div
+      className={`flex flex-col items-center justify-center 
+      ${fullPage ? "h-screen w-full bg-background" : ""} ${className}`}
+    >
+      <div className="corner-pulse-loader mb-2" />
+      {message && <p className="text-muted-foreground text-sm">{message}</p>}
 
       <style>
         {`
           .corner-pulse-loader {
             width: ${size}px;
             aspect-ratio: 1;
-            --_g: no-repeat radial-gradient(farthest-side,#2664ec 94%, #0000); /* use your brand color */
+            --_g: no-repeat radial-gradient(farthest-side,#2664ec 94%, #0000);
             background:
               var(--_g) 0    0,
               var(--_g) 100% 0,
