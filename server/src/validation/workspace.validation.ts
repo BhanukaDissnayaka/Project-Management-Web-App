@@ -21,3 +21,13 @@ export const createWorkspaceSchema = z.object({
   name: nameSchema,
   description: descriptionSchema,
 });
+
+export const addMemberToWorkspaceSchema = z.object({
+  userId: z
+    .string()
+    .trim()
+    .min(1, { message: "User ID is required" })
+    .refine((val) => isValidObjectId(val), {
+      message: "Invalid user ID",
+    }),
+});
