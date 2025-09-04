@@ -18,6 +18,7 @@ export const WorkspaceRolePermissions: Record<
     WorkspacePermissions.REMOVE_WORKSPACE_MEMBER,
     WorkspacePermissions.CREATE_BOARD,
     WorkspacePermissions.VIEW_ALL_BOARDS,
+    WorkspacePermissions.VIEW_ONLY,
   ],
   ADMIN: [
     WorkspacePermissions.MANAGE_WORKSPACE_SETTINGS,
@@ -26,6 +27,10 @@ export const WorkspaceRolePermissions: Record<
     WorkspacePermissions.REMOVE_WORKSPACE_MEMBER,
     WorkspacePermissions.CREATE_BOARD,
     WorkspacePermissions.VIEW_ALL_BOARDS,
+    WorkspacePermissions.VIEW_ONLY,
   ],
-  MEMBER: [WorkspacePermissions.VIEW_ALL_BOARDS],
+  MEMBER: [
+    WorkspacePermissions.VIEW_ALL_BOARDS,
+    WorkspacePermissions.VIEW_ONLY,
+  ],
 };

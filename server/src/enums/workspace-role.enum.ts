@@ -18,6 +18,7 @@ export const WorkspacePermissions = {
 
   CREATE_BOARD: "CREATE_BOARD",
   VIEW_ALL_BOARDS: "VIEW_ALL_BOARDS",
+  VIEW_ONLY: "VIEW_ONLY",
 } as const;
 
 export type WorkspacePermissionType = keyof typeof WorkspacePermissions;
