@@ -4,6 +4,8 @@ import type {
   AddUserToWorkspaceType,
   SearchDataType,
   SearchUserResponseType,
+  getWorkspaceMembersResponseType,
+  getWorkspaceMembersType,
 } from "../types/workspace-members.type";
 
 const workspaceMembersApi = baseApi.injectEndpoints({
@@ -28,11 +30,21 @@ const workspaceMembersApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["SearchUsersList"],
     }),
+    getWorkspaceMembers: builder.query<
+      getWorkspaceMembersResponseType,
+      getWorkspaceMembersType
+    >({
+      query: ({ searchValue, workspaceId, page, limit }) => ({
+        url: `workspace/${workspaceId}/members`,
+        method: "GET",
+        params: { search: searchValue, page, limit },
+      }),
+    }),
   }),
 });
 
 export const {
-  useGetSearchedUsersQuery,
   useLazyGetSearchedUsersQuery,
   useAddUserToWorkspaceMutation,
+  useGetWorkspaceMembersQuery,
 } = workspaceMembersApi;
