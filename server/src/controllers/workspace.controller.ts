@@ -5,6 +5,7 @@ import {
   createWorkspaceService,
   getAllWorkspacesUserIsMemberService,
   getWorkspaceByIdService,
+  getWorkspaceMembersService,
 } from "../services/workspace.service";
 import { HTTPSTATUS } from "../config/http.config";
 import {
@@ -69,6 +70,31 @@ export const addMemberToWorkspaceController = asyncHandler(
     await addMemberToWorkspaceService(targetUserId, workspaceId);
     return res.status(HTTPSTATUS.OK).json({
       message: "Member added to workspace successfully",
+    });
+  }
+);
+
+export const getWorkspaceMembersController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const workspaceId = workspaceIdSchema.parse(req.params.id);
+    const userId = req.user?._id;
+    const { member } = await getMemberInWorkspaceService(userId, workspaceId);
+    checkWorkspacePermission(member.role, [WorkspacePermissions.VIEW_ONLY]);
+    const search = (req.query.search as string) || "";
+    const pageNum = parseInt(req.query.page as string) || 1;
+    const limitNum = parseInt(req.query.limit as string) || 10;
+
+    const { members, pagination, roles } = await getWorkspaceMembersService(
+      search,
+      workspaceId,
+      pageNum,
+      limitNum
+    );
+    return res.status(HTTPSTATUS.OK).json({
+      message: "Workspace members retrieved successfully",
+      members,
+      pagination,
+      roles,
     });
   }
 );
