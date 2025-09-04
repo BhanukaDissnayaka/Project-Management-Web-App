@@ -24,9 +24,7 @@ const workspaceRoleSchema = new Schema<WorkspaceRoleDocument>(
       type: [String],
       enum: Object.values(WorkspacePermissions),
       required: true,
-      default: function (this: WorkspaceRoleDocument) {
-        return WorkspaceRolePermissions[this.name];
-      },
+      default: [],
     },
   },
   { timestamps: true }

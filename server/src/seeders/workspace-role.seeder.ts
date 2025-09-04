@@ -13,29 +13,29 @@ const seedWorkspaceRoles = async () => {
     const session = await mongoose.startSession();
     session.startTransaction();
 
-    // clearing existing Workspace Roles
-    await WorkspaceRoleModel.deleteMany({}, { session });
-
     for (const workspaceRoleName in WorkspaceRolePermissions) {
       const workspaceRole =
         workspaceRoleName as keyof typeof WorkspaceRolePermissions;
       const workspacePermissions = WorkspaceRolePermissions[workspaceRole];
 
-      //check if the role is already exists
-      const existingRole = await WorkspaceRoleModel.findOne({
-        name: workspaceRole,
-      }).session(session);
-      if (!existingRole) {
-        const newWorkspaceRole = new WorkspaceRoleModel({
-          name: workspaceRole,
-          permissions: workspacePermissions,
-        });
-        await newWorkspaceRole.save({ session });
-        console.log(`Role ${workspaceRole} added with permissions.`);
+      // Update if exists, insert if not
+      const result = await WorkspaceRoleModel.updateOne(
+        { name: workspaceRole },
+        {
+          $set: { permissions: workspacePermissions },
+        },
+        { upsert: true, session }
+      );
+
+      if (result.upsertedCount > 0) {
+        console.log(`Role ${workspaceRole} created with permissions.`);
+      } else if (result.modifiedCount > 0) {
+        console.log(`Role ${workspaceRole} updated with new permissions.`);
       } else {
-        console.log(`Role ${workspaceRole} already exists.`);
+        console.log(`Role ${workspaceRole} already up-to-date.`);
       }
     }
+
     await session.commitTransaction();
     console.log("Transaction committed.");
 
