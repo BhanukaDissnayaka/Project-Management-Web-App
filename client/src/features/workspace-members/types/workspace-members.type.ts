@@ -65,3 +65,13 @@ export type RoleType = {
   _id: string;
   name: string;
 };
+
+export type changeMemberRoleType = {
+  workspaceId: string;
+  roleId: string;
+  memberId: string;
+};
+export type changeMemberRoleResponseType = {
+  member: string;
+  message: string;
+};
