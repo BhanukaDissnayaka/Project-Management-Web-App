@@ -212,3 +212,22 @@ export const getWorkspaceMembersService = async (
     roles,
   };
 };
+
+export const changeWorkspaceRoleService = async (
+  workspaceId: string,
+  memberId: string,
+  roleId: string
+) => {
+  const workspace = await WorkspaceModel.findById(workspaceId);
+  if (!workspace) throw new NotFoundException("Workspace not found");
+  const role = await WorkspaceRoleModel.findById(roleId);
+  if (!role) throw new NotFoundException("Workspace Role not found");
+  const member = await WorkspaceMemberModel.findOne({
+    userId: memberId,
+    workspaceId: workspaceId,
+  });
+  if (!member) throw new Error("Member not found in the workspace");
+  member.role = role;
+  await member.save();
+  return { member };
+};
