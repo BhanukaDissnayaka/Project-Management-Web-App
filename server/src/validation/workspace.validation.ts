@@ -31,3 +31,8 @@ export const addMemberToWorkspaceSchema = z.object({
       message: "Invalid user ID",
     }),
 });
+
+export const changeMemberRoleSchema = z.object({
+  roleId: z.string().trim().min(1),
+  memberId: z.string().trim().min(1),
+});
