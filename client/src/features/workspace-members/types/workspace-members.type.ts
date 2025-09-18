@@ -32,26 +32,26 @@ export type getWorkspaceMembersType = {
   limit: number;
 };
 
+export type SearchedMemberType = {
+  _id: string;
+  userId: string;
+  workspaceId: string;
+  role: {
+    _id: string;
+    name: string;
+  };
+  joinedAt: string;
+  user: {
+    _id: string;
+    name: string;
+    email: string;
+    profilePicture: string | null;
+  };
+};
+
 export type getWorkspaceMembersResponseType = {
   message: string;
-  members: {
-    _id: string;
-    userId: string;
-    workspaceId: string;
-    role: {
-      _id: string;
-      name: string;
-    };
-    joinedAt: string;
-    createdAt: string;
-    updatedAt: string;
-    user: {
-      _id: string;
-      name: string;
-      email: string;
-      profilePicture: string | null;
-    };
-  }[];
+  members: SearchedMemberType[];
   pagination: {
     total: number;
     page: number;
@@ -71,7 +71,17 @@ export type changeMemberRoleType = {
   roleId: string;
   memberId: string;
 };
+
+export type MemberWithRoleType = {
+  _id: string;
+  userId: string;
+  workspaceId: string;
+  role: {
+    _id: string;
+    name: string;
+  };
+};
 export type changeMemberRoleResponseType = {
-  member: string;
   message: string;
+  member: MemberWithRoleType;
 };
