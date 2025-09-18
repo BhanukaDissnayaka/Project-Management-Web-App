@@ -119,7 +119,7 @@ export const changeMemberRoleController = asyncHandler(
     );
     return res.status(HTTPSTATUS.OK).json({
       message: "Member Role changed successfully",
-      targetMember,
+      member: targetMember,
     });
   }
 );
