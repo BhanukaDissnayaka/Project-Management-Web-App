@@ -34,5 +34,16 @@ export const addMemberToWorkspaceSchema = z.object({
 
 export const changeMemberRoleSchema = z.object({
   roleId: z.string().trim().min(1),
-  memberId: z.string().trim().min(1),
+  memberId: z.string().trim().min(1, { message: "member id is required" }),
+});
+
+export const removeWorkspaceMemberSchema = z.object({
+  id: workspaceIdSchema,
+  userId: z
+    .string()
+    .trim()
+    .min(1, { message: "member id is required" })
+    .refine((val) => isValidObjectId(val), {
+      message: "Invalid member ID",
+    }),
 });
