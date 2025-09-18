@@ -232,3 +232,32 @@ export const changeWorkspaceRoleService = async (
     .lean();
   return { member: updatedMember };
 };
+
+export const removeWorkspaceMemberService = async (
+  workspaceId: string,
+  userId: string
+) => {
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+
+    const workspace = await WorkspaceModel.findById(workspaceId);
+    if (!workspace) throw new NotFoundException("Workspace not found");
+    const deletedMember = await WorkspaceMemberModel.findOneAndDelete(
+      {
+        userId,
+        workspaceId,
+      },
+      { session }
+    );
+    if (!deletedMember)
+      throw new NotFoundException("Member not found in this workspace");
+    await session.commitTransaction();
+    return { deletedMember };
+  } catch (err) {
+    await session.abortTransaction();
+    throw err;
+  } finally {
+    session.endSession();
+  }
+};
