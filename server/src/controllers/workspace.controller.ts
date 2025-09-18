@@ -7,12 +7,14 @@ import {
   getAllWorkspacesUserIsMemberService,
   getWorkspaceByIdService,
   getWorkspaceMembersService,
+  removeWorkspaceMemberService,
 } from "../services/workspace.service";
 import { HTTPSTATUS } from "../config/http.config";
 import {
   addMemberToWorkspaceSchema,
   changeMemberRoleSchema,
   createWorkspaceSchema,
+  removeWorkspaceMemberSchema,
   workspaceIdSchema,
 } from "../validation/workspace.validation";
 import { getMemberInWorkspaceService } from "../services/member.service";
@@ -120,6 +122,26 @@ export const changeMemberRoleController = asyncHandler(
     return res.status(HTTPSTATUS.OK).json({
       message: "Member Role changed successfully",
       member: targetMember,
+    });
+  }
+);
+
+export const removeWorkspaceMemberController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { id: workspaceId, userId: targetUserId } =
+      removeWorkspaceMemberSchema.parse(req.params);
+    const userId = req.user?._id;
+    const { member } = await getMemberInWorkspaceService(userId, workspaceId);
+    checkWorkspacePermission(member.role, [
+      WorkspacePermissions.REMOVE_WORKSPACE_MEMBER,
+    ]);
+    const { deletedMember } = await removeWorkspaceMemberService(
+      workspaceId,
+      targetUserId
+    );
+    return res.status(HTTPSTATUS.OK).json({
+      message: "Member removed successfully",
+      member: deletedMember,
     });
   }
 );
