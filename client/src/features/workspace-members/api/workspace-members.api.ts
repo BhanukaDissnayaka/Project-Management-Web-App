@@ -4,6 +4,8 @@ import type {
   AddUserToWorkspaceType,
   SearchDataType,
   SearchUserResponseType,
+  changeMemberRoleResponseType,
+  changeMemberRoleType,
   getWorkspaceMembersResponseType,
   getWorkspaceMembersType,
 } from "../types/workspace-members.type";
@@ -40,6 +42,16 @@ const workspaceMembersApi = baseApi.injectEndpoints({
         params: { search: searchValue, page, limit },
       }),
     }),
+    changeMemberRole: builder.mutation<
+      changeMemberRoleResponseType,
+      changeMemberRoleType
+    >({
+      query: ({ workspaceId, roleId, memberId }) => ({
+        url: `workspace/${workspaceId}/members/role`,
+        method: "PUT",
+        body: { roleId, memberId },
+      }),
+    }),
   }),
 });
 
@@ -47,4 +59,5 @@ export const {
   useLazyGetSearchedUsersQuery,
   useAddUserToWorkspaceMutation,
   useGetWorkspaceMembersQuery,
+  useChangeMemberRoleMutation,
 } = workspaceMembersApi;
