@@ -43,7 +43,6 @@ export default function WorkspaceAllMembers() {
     { workspaceId, searchValue, page, limit },
     { skip: !workspaceId }
   );
-
   const members = data?.members || [];
   const roles = data?.roles || [];
   const pagination = data?.pagination ?? {
@@ -191,12 +190,9 @@ export default function WorkspaceAllMembers() {
           <>
             {members.map((member) => (
               <MemberCard
-                memberId={member._id}
-                profilePic={member.user.profilePicture}
-                name={member.user.name}
-                role={member.role.name}
-                joinedAt={timeAgo(member.joinedAt)}
+                member={member}
                 roles={roles}
+                workspaceId={workspaceId}
                 key={member._id}
               />
             ))}
