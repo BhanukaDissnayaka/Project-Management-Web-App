@@ -85,3 +85,18 @@ export type changeMemberRoleResponseType = {
   message: string;
   member: MemberWithRoleType;
 };
+
+export type RemoveWorkspaceMemberType = {
+  workspaceId: string;
+  userId: string;
+};
+
+export type RemoveWorkspaceMemberResponseType = {
+  message: string;
+  member: {
+    _id: string;
+    userId: string;
+    workspaceId: string;
+    role: string;
+  };
+};
