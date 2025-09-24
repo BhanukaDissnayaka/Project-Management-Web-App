@@ -7,6 +7,7 @@ import { useAddUserToWorkspaceMutation } from "../api/workspace-members.api";
 import useWorkspaceId from "@/hooks/useWorkspaceId";
 import { isFetchBaseQueryError } from "@/utils/errorGuards";
 import { showErrorToast, showSuccessToast } from "@/lib/toastHandler";
+import MainLoader from "@/components/shared/MainLoader";
 
 function SearchedUserCard({ user }: { user: searchedUserType }) {
   console.log(user);
@@ -35,6 +36,12 @@ function SearchedUserCard({ user }: { user: searchedUserType }) {
       key={user._id}
       className="flex items-center justify-between gap-x-2 p-3"
     >
+      {isLoading && (
+        <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-10 flex items-center justify-center">
+          <MainLoader></MainLoader>
+        </div>
+      )}
+
       <div className="flex items-center gap-x-2">
         {user.avatar ? (
           <Avatar className="w-10 h-10">
