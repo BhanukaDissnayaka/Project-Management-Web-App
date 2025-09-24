@@ -19,7 +19,10 @@ import type {
   RoleType,
   SearchedMemberType,
 } from "../types/workspace-members.type";
-import { useChangeMemberRoleMutation } from "../api/workspace-members.api";
+import {
+  useChangeMemberRoleMutation,
+  useRemoveWorkspaceMemberMutation,
+} from "../api/workspace-members.api";
 import { isFetchBaseQueryError } from "@/utils/errorGuards";
 import { showErrorToast, showSuccessToast } from "@/lib/toastHandler";
 import MainLoader from "@/components/shared/MainLoader";
@@ -38,7 +41,8 @@ function MemberCard({
   const { user, role } = member;
   const [currentRole, setCurrentRole] = useState(role);
   const [changeMemberRole, { isLoading }] = useChangeMemberRoleMutation();
-
+  const [removeWorkspaceMember, { isLoading: isRemoveMemberLoading }] =
+    useRemoveWorkspaceMemberMutation();
   const handleSelect = async (roleId: string) => {
     try {
       const res = await changeMemberRole({
@@ -61,10 +65,31 @@ function MemberCard({
       }
     }
   };
+  const handleRemoveMember = async () => {
+    try {
+      const res = await removeWorkspaceMember({
+        workspaceId,
+        userId: user._id,
+      }).unwrap();
+      console.log(res);
+      showSuccessToast("Member removed successfully");
+    } catch (err) {
+      if (isFetchBaseQueryError(err)) {
+        if (
+          typeof err.data === "object" &&
+          err.data !== null &&
+          "message" in err.data
+        ) {
+          const message = (err.data as { message: string }).message;
+          showErrorToast(message);
+        }
+      }
+    }
+  };
 
   return (
     <>
-      {isLoading && (
+      {(isLoading || isRemoveMemberLoading) && (
         <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-10 flex items-center justify-center">
           <MainLoader></MainLoader>
         </div>
@@ -98,7 +123,9 @@ function MemberCard({
 
         <div className="flex items-center space-x-2 md:space-x-5">
           <Select
-            disabled={isLoading || role.name === "OWNER"}
+            disabled={
+              isLoading || isRemoveMemberLoading || role.name === "OWNER"
+            }
             value={currentRole.name === "OWNER" ? undefined : currentRole._id}
             onValueChange={(roleId) => handleSelect(roleId)}
           >
@@ -119,7 +146,13 @@ function MemberCard({
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Button variant="destructive" size="sm">
+          <Button
+            className="cursor-pointer"
+            disabled={currentRole.name === "OWNER"}
+            variant="destructive"
+            size="sm"
+            onClick={() => handleRemoveMember()}
+          >
             <UserRoundX /> Remove
           </Button>
         </div>
