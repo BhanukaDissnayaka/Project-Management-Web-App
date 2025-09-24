@@ -2,6 +2,8 @@ import { baseApi } from "@/api/baseApi";
 import type {
   AddUserToWorkspaceResponseType,
   AddUserToWorkspaceType,
+  RemoveWorkspaceMemberResponseType,
+  RemoveWorkspaceMemberType,
   SearchDataType,
   SearchUserResponseType,
   changeMemberRoleResponseType,
@@ -41,6 +43,7 @@ const workspaceMembersApi = baseApi.injectEndpoints({
         method: "GET",
         params: { search: searchValue, page, limit },
       }),
+      providesTags: () => [{ type: "WorkspaceMemberList" }],
     }),
     changeMemberRole: builder.mutation<
       changeMemberRoleResponseType,
@@ -52,6 +55,16 @@ const workspaceMembersApi = baseApi.injectEndpoints({
         body: { roleId, memberId },
       }),
     }),
+    removeWorkspaceMember: builder.mutation<
+      RemoveWorkspaceMemberResponseType,
+      RemoveWorkspaceMemberType
+    >({
+      query: ({ workspaceId, userId }) => ({
+        url: `workspace/${workspaceId}/members/${userId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["WorkspaceMemberList"],
+    }),
   }),
 });
 
@@ -60,4 +73,5 @@ export const {
   useAddUserToWorkspaceMutation,
   useGetWorkspaceMembersQuery,
   useChangeMemberRoleMutation,
+  useRemoveWorkspaceMemberMutation,
 } = workspaceMembersApi;
