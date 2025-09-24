@@ -9,6 +9,7 @@ import {
   UnauthorizedException,
 } from "../utils/appError";
 import mongoose from "mongoose";
+import { PipelineStage } from "mongoose";
 
 export const createWorkspaceService = async (
   userId: string,
@@ -126,4 +127,137 @@ export const getAllWorkspacesUserIsMemberService = async (userId: string) => {
     .exec();
   const workspaces = memberships.map((membership) => membership.workspaceId);
   return { workspaces };
+};
+
+export const getWorkspaceMembersService = async (
+  search: string,
+  workspaceId: string,
+  pageNum: number,
+  limitNum: number
+) => {
+  const workspace = await WorkspaceModel.findById(workspaceId);
+  if (!workspace) {
+    throw new NotFoundException("Workspace not found");
+  }
+  const pipeline: PipelineStage[] = [
+    { $match: { workspaceId: new mongoose.Types.ObjectId(workspaceId) } },
+
+    // Lookup user with only selected fields
+
+    {
+      $lookup: {
+        from: "users",
+        let: { userId: "$userId" },
+        pipeline: [
+          { $match: { $expr: { $eq: ["$_id", "$$userId"] } } },
+          {
+            $project: {
+              _id: 1,
+              name: 1,
+              email: 1,
+              profilePicture: 1,
+            },
+          },
+        ],
+        as: "user",
+      },
+    },
+    { $unwind: "$user" },
+
+    // Lookup role details
+    {
+      $lookup: {
+        from: "workspaceroles", // adjust collection name if different
+        let: { role: "$role" },
+        pipeline: [
+          { $match: { $expr: { $eq: ["$_id", "$$role"] } } },
+          { $project: { _id: 1, name: 1 } },
+        ],
+        as: "role",
+      },
+    },
+    { $unwind: "$role" },
+  ];
+  const keyword = search.trim();
+  if (keyword) {
+    pipeline.push({
+      $match: {
+        $or: [
+          { "user.name": { $regex: keyword, $options: "i" } },
+          { "user.email": { $regex: keyword, $options: "i" } },
+        ],
+      },
+    });
+  }
+  const totalPipeline = [...pipeline, { $count: "count" }];
+  const [{ count } = { count: 0 }] = await WorkspaceMemberModel.aggregate(
+    totalPipeline
+  );
+  pipeline.push({ $sort: { "user.name": 1 } }); // ascending
+  pipeline.push({ $skip: (pageNum - 1) * limitNum });
+  pipeline.push({ $limit: limitNum });
+
+  const members = await WorkspaceMemberModel.aggregate(pipeline);
+
+  const roles = await WorkspaceRoleModel.find({}, { _id: 1, name: 1 });
+
+  return {
+    members,
+    pagination: {
+      total: count,
+      page: pageNum,
+      limit: limitNum,
+      totalPages: Math.ceil(count / limitNum),
+    },
+    roles,
+  };
+};
+
+export const changeWorkspaceRoleService = async (
+  workspaceId: string,
+  memberId: string,
+  roleId: string
+) => {
+  const workspace = await WorkspaceModel.findById(workspaceId);
+  if (!workspace) throw new NotFoundException("Workspace not found");
+  const role = await WorkspaceRoleModel.findById(roleId);
+  if (!role) throw new NotFoundException("Workspace Role not found");
+
+  const updatedMember = await WorkspaceMemberModel.findOneAndUpdate(
+    { userId: memberId, workspaceId: workspaceId },
+    { role: roleId },
+    { new: true }
+  )
+    .populate("role", "_id name")
+    .lean();
+  return { member: updatedMember };
+};
+
+export const removeWorkspaceMemberService = async (
+  workspaceId: string,
+  userId: string
+) => {
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+
+    const workspace = await WorkspaceModel.findById(workspaceId);
+    if (!workspace) throw new NotFoundException("Workspace not found");
+    const deletedMember = await WorkspaceMemberModel.findOneAndDelete(
+      {
+        userId,
+        workspaceId,
+      },
+      { session }
+    );
+    if (!deletedMember)
+      throw new NotFoundException("Member not found in this workspace");
+    await session.commitTransaction();
+    return { deletedMember };
+  } catch (err) {
+    await session.abortTransaction();
+    throw err;
+  } finally {
+    session.endSession();
+  }
 };

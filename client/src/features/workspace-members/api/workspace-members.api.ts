@@ -2,8 +2,14 @@ import { baseApi } from "@/api/baseApi";
 import type {
   AddUserToWorkspaceResponseType,
   AddUserToWorkspaceType,
+  RemoveWorkspaceMemberResponseType,
+  RemoveWorkspaceMemberType,
   SearchDataType,
   SearchUserResponseType,
+  changeMemberRoleResponseType,
+  changeMemberRoleType,
+  getWorkspaceMembersResponseType,
+  getWorkspaceMembersType,
 } from "../types/workspace-members.type";
 
 const workspaceMembersApi = baseApi.injectEndpoints({
@@ -28,11 +34,44 @@ const workspaceMembersApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["SearchUsersList"],
     }),
+    getWorkspaceMembers: builder.query<
+      getWorkspaceMembersResponseType,
+      getWorkspaceMembersType
+    >({
+      query: ({ searchValue, workspaceId, page, limit }) => ({
+        url: `workspace/${workspaceId}/members`,
+        method: "GET",
+        params: { search: searchValue, page, limit },
+      }),
+      providesTags: () => [{ type: "WorkspaceMemberList" }],
+    }),
+    changeMemberRole: builder.mutation<
+      changeMemberRoleResponseType,
+      changeMemberRoleType
+    >({
+      query: ({ workspaceId, roleId, memberId }) => ({
+        url: `workspace/${workspaceId}/members/role`,
+        method: "PUT",
+        body: { roleId, memberId },
+      }),
+    }),
+    removeWorkspaceMember: builder.mutation<
+      RemoveWorkspaceMemberResponseType,
+      RemoveWorkspaceMemberType
+    >({
+      query: ({ workspaceId, userId }) => ({
+        url: `workspace/${workspaceId}/members/${userId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["WorkspaceMemberList"],
+    }),
   }),
 });
 
 export const {
-  useGetSearchedUsersQuery,
   useLazyGetSearchedUsersQuery,
   useAddUserToWorkspaceMutation,
+  useGetWorkspaceMembersQuery,
+  useChangeMemberRoleMutation,
+  useRemoveWorkspaceMemberMutation,
 } = workspaceMembersApi;
