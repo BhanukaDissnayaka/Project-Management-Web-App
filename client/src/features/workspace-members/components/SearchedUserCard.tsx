@@ -8,6 +8,8 @@ import useWorkspaceId from "@/hooks/useWorkspaceId";
 import { isFetchBaseQueryError } from "@/utils/errorGuards";
 import { showErrorToast, showSuccessToast } from "@/lib/toastHandler";
 import MainLoader from "@/components/shared/MainLoader";
+import PermissionWrapper from "@/components/shared/PermissionWrapper";
+import { WorkspacePermissions } from "@/constant/permissions";
 
 function SearchedUserCard({ user }: { user: searchedUserType }) {
   console.log(user);
@@ -54,19 +56,23 @@ function SearchedUserCard({ user }: { user: searchedUserType }) {
         <p className="font-medium text-gray-text">{user.name}</p>
       </div>
 
-      <Button
-        variant="default"
-        size="sm"
-        className="cursor-pointer"
-        disabled={user.isMember || isLoading}
-        onClick={() => addUserToWorkspaceHandler(user._id)}
+      <PermissionWrapper
+        requiredPermission={WorkspacePermissions.ADD_WORKSPACE_MEMBER}
       >
-        {user.isMember ? (
-          <UserCheck strokeWidth={2.5} />
-        ) : (
-          <UserRoundPlus strokeWidth={2.5} />
-        )}
-      </Button>
+        <Button
+          variant="default"
+          size="sm"
+          className="cursor-pointer"
+          disabled={user.isMember || isLoading}
+          onClick={() => addUserToWorkspaceHandler(user._id)}
+        >
+          {user.isMember ? (
+            <UserCheck strokeWidth={2.5} />
+          ) : (
+            <UserRoundPlus strokeWidth={2.5} />
+          )}
+        </Button>
+      </PermissionWrapper>
     </div>
   );
 }

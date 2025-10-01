@@ -17,11 +17,17 @@ import { useState } from "react";
 import MainLoader from "@/components/shared/MainLoader";
 import type { searchedUserType } from "../types/workspace-members.type";
 import SearchedUserCard from "./SearchedUserCard";
+import { WorkspacePermissions } from "@/constant/permissions";
+import PermissionWrapper from "@/components/shared/PermissionWrapper";
+import { usePermissions } from "@/hooks/usePermissions";
 
 function WorkspaceAddMember() {
   const workspaceId = useWorkspaceId();
   const [getSearchedUsers, { data, isFetching }] =
     useLazyGetSearchedUsersQuery();
+  const canAddMembers = usePermissions(
+    WorkspacePermissions.ADD_WORKSPACE_MEMBER
+  );
   const [searchedUsers, setSearchedUsers] = useState<searchedUserType[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
 
@@ -39,7 +45,7 @@ function WorkspaceAddMember() {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (isFetching) return;
+    if (isFetching || !canAddMembers) return;
 
     try {
       setHasSearched(true);
@@ -73,23 +79,34 @@ function WorkspaceAddMember() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      placeholder="Search user by email address"
-                      className="!h-[40px] md:min-w-75 w-full"
-                      {...field}
-                    />
+                    <PermissionWrapper
+                      requiredPermission={
+                        WorkspacePermissions.ADD_WORKSPACE_MEMBER
+                      }
+                    >
+                      <Input
+                        placeholder="Search user by email address"
+                        className="!h-[40px] md:min-w-75 w-full"
+                        {...field}
+                      />
+                    </PermissionWrapper>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button
-              className="w-full md:w-50"
-              type="submit"
-              disabled={isFetching}
+
+            <PermissionWrapper
+              requiredPermission={WorkspacePermissions.ADD_WORKSPACE_MEMBER}
             >
-              Search user
-            </Button>
+              <Button
+                className="w-full md:w-50"
+                type="submit"
+                disabled={isFetching}
+              >
+                Search user
+              </Button>
+            </PermissionWrapper>
           </div>
         </form>
       </Form>
