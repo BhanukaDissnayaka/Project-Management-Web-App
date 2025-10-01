@@ -18,8 +18,8 @@ import CreateWorkspaceDialog from "@/components/shared/workspace/CreateWorkspace
 const AppLayout = () => {
   const workspaceId = useWorkspaceId();
 
-  const { error, isError, isLoading } = useGetWorkspaceByIdQuery(workspaceId);
-
+  const { error, isError, isLoading, isFetching } =
+    useGetWorkspaceByIdQuery(workspaceId);
   // Show toast for non-404 errors
   useEffect(() => {
     if (
@@ -34,7 +34,7 @@ const AppLayout = () => {
   }, [error, isError]);
 
   // Show loader
-  if (isLoading) return <MainLoader />;
+  if (isLoading || isFetching) return <MainLoader />;
 
   // Render Forbidden Component if user is not a member of workspace
   if (isError && isFetchBaseQueryError(error) && error.status === 403) {

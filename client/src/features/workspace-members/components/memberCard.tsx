@@ -28,6 +28,8 @@ import { showErrorToast, showSuccessToast } from "@/lib/toastHandler";
 import MainLoader from "@/components/shared/MainLoader";
 import { useState } from "react";
 import { timeAgo } from "@/utils/timeAgo";
+import { WorkspacePermissions } from "@/constant/permissions";
+import PermissionWrapper from "@/components/shared/PermissionWrapper";
 
 function MemberCard({
   member,
@@ -122,39 +124,50 @@ function MemberCard({
         </div>
 
         <div className="flex items-center space-x-2 md:space-x-5">
-          <Select
-            disabled={
-              isLoading || isRemoveMemberLoading || role.name === "OWNER"
+          <PermissionWrapper
+            requiredPermission={
+              WorkspacePermissions.CHANGE_WORKSPACE_MEMBER_ROLE
             }
-            value={currentRole.name === "OWNER" ? undefined : currentRole._id}
-            onValueChange={(roleId) => handleSelect(roleId)}
           >
-            <SelectTrigger className="w-[110px]">
-              <SelectValue placeholder={currentRole.name.toLowerCase()} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Role in</SelectLabel>
+            <Select
+              disabled={
+                isLoading || isRemoveMemberLoading || role.name === "OWNER"
+              }
+              value={currentRole.name === "OWNER" ? undefined : currentRole._id}
+              onValueChange={(roleId) => handleSelect(roleId)}
+            >
+              <SelectTrigger className="w-[110px]">
+                <SelectValue placeholder={currentRole.name.toLowerCase()} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Role in</SelectLabel>
 
-                {roles
-                  .filter((r) => r.name !== "OWNER")
-                  .map((role) => (
-                    <SelectItem value={role._id} key={role._id}>
-                      {role.name.toLowerCase()}
-                    </SelectItem>
-                  ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Button
-            className="cursor-pointer"
-            disabled={currentRole.name === "OWNER"}
-            variant="destructive"
-            size="sm"
-            onClick={() => handleRemoveMember()}
+                  {roles
+                    .filter((r) => r.name !== "OWNER")
+                    .map((role) => (
+                      <SelectItem value={role._id} key={role._id}>
+                        {role.name.toLowerCase()}
+                      </SelectItem>
+                    ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </PermissionWrapper>
+
+          <PermissionWrapper
+            requiredPermission={WorkspacePermissions.REMOVE_WORKSPACE_MEMBER}
           >
-            <UserRoundX /> Remove
-          </Button>
+            <Button
+              className="cursor-pointer"
+              disabled={currentRole.name === "OWNER"}
+              variant="destructive"
+              size="sm"
+              onClick={() => handleRemoveMember()}
+            >
+              <UserRoundX /> Remove
+            </Button>
+          </PermissionWrapper>
         </div>
       </div>
       <hr />

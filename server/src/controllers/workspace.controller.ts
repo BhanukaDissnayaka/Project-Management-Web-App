@@ -40,10 +40,14 @@ export const getWorkspaceByIdController = asyncHandler(
     console.log(workspaceId, "userId:", userId);
 
     await getMemberInWorkspaceService(userId, workspaceId);
-    const { workspace } = await getWorkspaceByIdService(userId, workspaceId);
+    const { workspace, currentMember } = await getWorkspaceByIdService(
+      userId,
+      workspaceId
+    );
     return res.status(HTTPSTATUS.OK).json({
       message: "Workspace fetched successfully",
       workspace,
+      currentMember,
     });
   }
 );

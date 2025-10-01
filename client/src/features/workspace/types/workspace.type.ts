@@ -1,13 +1,28 @@
+import type { WorkspacePermissionsType } from "@/constant/permissions";
+
 export type WorkspaceType = {
   _id: string;
   name: string;
   description: string;
   owner: string;
-  inviteCode: string;
+};
+
+export type currentMemberType = {
+  _id: string;
+  userId: string;
+  workspaceId: string;
+  role: {
+    _id: string;
+    name: string;
+    permissions: WorkspacePermissionsType[];
+  };
+  joinedAt: string;
+  createdAt: string;
 };
 
 export type WorkspaceByIdResponseType = {
   workspace: WorkspaceType;
+  currentMember: currentMemberType;
   message: string;
 };
 export type AllWorkspaceResponseType = {

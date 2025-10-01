@@ -16,7 +16,6 @@ import { isFetchBaseQueryError } from "@/utils/errorGuards";
 import { showErrorToast } from "@/lib/toastHandler";
 import MemberCard from "@/features/workspace-members/components/memberCard";
 import MainLoader from "@/components/shared/MainLoader";
-import { timeAgo } from "@/utils/timeAgo";
 import { useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import {
