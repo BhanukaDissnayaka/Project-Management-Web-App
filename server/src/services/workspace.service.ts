@@ -113,11 +113,7 @@ export const getWorkspaceByIdService = async (
   if (!currentMember) {
     throw new UnauthorizedException("You are not a member of this workspace");
   }
-  const workspaceWithCurrentMember = {
-    ...workspace.toObject(),
-    currentMember,
-  };
-  return { workspace: workspaceWithCurrentMember };
+  return { workspace: workspace, currentMember };
 };
 
 export const getAllWorkspacesUserIsMemberService = async (userId: string) => {
