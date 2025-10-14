@@ -20,7 +20,7 @@ const workspaceMembersApi = baseApi.injectEndpoints({
         method: "GET",
         params: { q: values.searchValue },
       }),
-      providesTags: () => [{ type: "SearchUsersList" }],
+      providesTags: () => [{ type: "SearchUser", id: "LIST" }],
     }),
 
     addUserToWorkspace: builder.mutation<
@@ -32,7 +32,7 @@ const workspaceMembersApi = baseApi.injectEndpoints({
         method: "POST",
         body: { userId },
       }),
-      invalidatesTags: ["SearchUsersList"],
+      invalidatesTags: [{ type: "SearchUser", id: "LIST" }],
     }),
     getWorkspaceMembers: builder.query<
       getWorkspaceMembersResponseType,
@@ -43,7 +43,7 @@ const workspaceMembersApi = baseApi.injectEndpoints({
         method: "GET",
         params: { search: searchValue, page, limit },
       }),
-      providesTags: () => [{ type: "WorkspaceMemberList" }],
+      providesTags: () => [{ type: "WorkspaceMember", id: "LIST" }],
     }),
     changeMemberRole: builder.mutation<
       changeMemberRoleResponseType,
@@ -54,6 +54,7 @@ const workspaceMembersApi = baseApi.injectEndpoints({
         method: "PUT",
         body: { roleId, memberId },
       }),
+      invalidatesTags: [{ type: "WorkspaceMember", id: "LIST" }],
     }),
     removeWorkspaceMember: builder.mutation<
       RemoveWorkspaceMemberResponseType,
@@ -63,7 +64,7 @@ const workspaceMembersApi = baseApi.injectEndpoints({
         url: `workspace/${workspaceId}/members/${userId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["WorkspaceMemberList"],
+      invalidatesTags: [{ type: "WorkspaceMember", id: "LIST" }],
     }),
   }),
 });

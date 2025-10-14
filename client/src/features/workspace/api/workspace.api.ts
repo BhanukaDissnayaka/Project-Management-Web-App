@@ -25,7 +25,7 @@ export const workspaceApi = baseApi.injectEndpoints({
           url: `workspace/all`,
           method: "GET",
         }),
-        providesTags: [{ type: "WorkspaceList" }],
+        providesTags: [{ type: "Workspace", id: "LIST" }],
       }
     ),
 
@@ -39,7 +39,7 @@ export const workspaceApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["WorkspaceList"],
+      invalidatesTags: [{ type: "Workspace", id: "LIST" }],
     }),
   }),
 });
