@@ -4,6 +4,7 @@ import {
   addMemberToWorkspaceService,
   changeWorkspaceRoleService,
   createWorkspaceService,
+  deleteWorkspaceService,
   getAllWorkspacesUserIsMemberService,
   getWorkspaceByIdService,
   getWorkspaceMembersService,
@@ -168,5 +169,24 @@ export const updateWorkspaceByIdController = asyncHandler(
     return res
       .status(HTTPSTATUS.OK)
       .json({ message: "Workspace updated successfully", workspace });
+  }
+);
+
+export const deleteWorkspaceController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const workspaceId = workspaceIdSchema.parse(req.params.id);
+    const userId = req.user?._id;
+    const { member } = await getMemberInWorkspaceService(userId, workspaceId);
+    checkWorkspacePermission(member.role, [
+      WorkspacePermissions.DELETE_WORKSPACE,
+    ]);
+    const { currentWorkspace } = await deleteWorkspaceService(
+      workspaceId,
+      userId
+    );
+
+    return res
+      .status(HTTPSTATUS.OK)
+      .json({ message: "Workspace deleted successfully", currentWorkspace });
   }
 );
