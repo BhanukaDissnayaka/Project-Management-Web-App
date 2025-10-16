@@ -38,3 +38,15 @@ export type CreateWorkspaceResponseType = {
   message: string;
   workspace: WorkspaceType;
 };
+
+export type UpdateWorkspaceType = {
+  workspaceId: string;
+  body: {
+    name: string;
+    description: string;
+  };
+};
+export type UpdateWorkspaceResponseType = {
+  message: string;
+  workspace: WorkspaceType;
+};
