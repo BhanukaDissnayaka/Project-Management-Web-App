@@ -4,10 +4,12 @@ import {
   addMemberToWorkspaceService,
   changeWorkspaceRoleService,
   createWorkspaceService,
+  deleteWorkspaceService,
   getAllWorkspacesUserIsMemberService,
   getWorkspaceByIdService,
   getWorkspaceMembersService,
   removeWorkspaceMemberService,
+  updateWorkspaceByIdService,
 } from "../services/workspace.service";
 import { HTTPSTATUS } from "../config/http.config";
 import {
@@ -15,6 +17,7 @@ import {
   changeMemberRoleSchema,
   createWorkspaceSchema,
   removeWorkspaceMemberSchema,
+  updateWorkspaceSchema,
   workspaceIdSchema,
 } from "../validation/workspace.validation";
 import { getMemberInWorkspaceService } from "../services/member.service";
@@ -147,5 +150,43 @@ export const removeWorkspaceMemberController = asyncHandler(
       message: "Member removed successfully",
       member: deletedMember,
     });
+  }
+);
+export const updateWorkspaceByIdController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const workspaceId = workspaceIdSchema.parse(req.params.id);
+    const { name, description } = updateWorkspaceSchema.parse(req.body);
+    const userId = req.user?._id;
+    const { member } = await getMemberInWorkspaceService(userId, workspaceId);
+    checkWorkspacePermission(member.role, [
+      WorkspacePermissions.EDIT_WORKSPACE,
+    ]);
+    const { workspace } = await updateWorkspaceByIdService(
+      workspaceId,
+      name,
+      description
+    );
+    return res
+      .status(HTTPSTATUS.OK)
+      .json({ message: "Workspace updated successfully", workspace });
+  }
+);
+
+export const deleteWorkspaceController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const workspaceId = workspaceIdSchema.parse(req.params.id);
+    const userId = req.user?._id;
+    const { member } = await getMemberInWorkspaceService(userId, workspaceId);
+    checkWorkspacePermission(member.role, [
+      WorkspacePermissions.DELETE_WORKSPACE,
+    ]);
+    const { currentWorkspace } = await deleteWorkspaceService(
+      workspaceId,
+      userId
+    );
+
+    return res
+      .status(HTTPSTATUS.OK)
+      .json({ message: "Workspace deleted successfully", currentWorkspace });
   }
 );

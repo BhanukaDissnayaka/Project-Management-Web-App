@@ -3,6 +3,10 @@ import type {
   AllWorkspaceResponseType,
   CreateWorkspaceResponseType,
   CreateWorkspaceType,
+  DeleteWorkspaceResponseType,
+  DeleteWorkspaceType,
+  UpdateWorkspaceResponseType,
+  UpdateWorkspaceType,
   WorkspaceByIdResponseType,
 } from "../types/workspace.type";
 
@@ -13,9 +17,13 @@ export const workspaceApi = baseApi.injectEndpoints({
         url: `workspace/${workspaceId}`,
         method: "GET",
       }),
-      providesTags: (_, __, workspaceId) => [
-        { type: "Workspace", id: workspaceId },
-      ],
+      providesTags: (result, __, workspaceId) =>
+        result
+          ? [
+              { type: "Workspace", id: workspaceId },
+              { type: "Workspace", id: "LIST" },
+            ]
+          : [{ type: "Workspace", id: "LIST" }],
     }),
 
     // Get all workspaces of current user
@@ -25,7 +33,16 @@ export const workspaceApi = baseApi.injectEndpoints({
           url: `workspace/all`,
           method: "GET",
         }),
-        providesTags: [{ type: "Workspace", id: "LIST" }],
+        providesTags: (result) =>
+          result
+            ? [
+                { type: "Workspace", id: "LIST" },
+                ...result.workspaces.map((w) => ({
+                  type: "Workspace" as const,
+                  id: w._id,
+                })),
+              ]
+            : [{ type: "Workspace", id: "LIST" }],
       }
     ),
 
@@ -41,6 +58,34 @@ export const workspaceApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: "Workspace", id: "LIST" }],
     }),
+
+    updateWorkspace: builder.mutation<
+      UpdateWorkspaceResponseType,
+      UpdateWorkspaceType
+    >({
+      query: ({ workspaceId, body }) => ({
+        url: `workspace/update/${workspaceId}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: (_, __, { workspaceId }) => [
+        { type: "Workspace", id: workspaceId },
+        { type: "Workspace", id: "LIST" },
+      ],
+    }),
+    deleteWorkspace: builder.mutation<
+      DeleteWorkspaceResponseType,
+      DeleteWorkspaceType
+    >({
+      query: ({ workspaceId }) => ({
+        url: `workspace/delete/${workspaceId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (_, __, { workspaceId }) => [
+        { type: "Workspace", id: workspaceId },
+        { type: "Workspace", id: "LIST" },
+      ],
+    }),
   }),
 });
 
@@ -48,4 +93,6 @@ export const {
   useGetWorkspaceByIdQuery,
   useGetAllWorkspacesUserIsMemberQuery,
   useCreateWorkspaceMutation,
+  useUpdateWorkspaceMutation,
+  useDeleteWorkspaceMutation,
 } = workspaceApi;

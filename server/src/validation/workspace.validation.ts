@@ -1,5 +1,5 @@
 import { isValidObjectId } from "mongoose";
-import { z } from "zod";
+import { string, z } from "zod";
 
 export const workspaceIdSchema = z
   .string()
@@ -46,4 +46,9 @@ export const removeWorkspaceMemberSchema = z.object({
     .refine((val) => isValidObjectId(val), {
       message: "Invalid member ID",
     }),
+});
+
+export const updateWorkspaceSchema = z.object({
+  name: nameSchema,
+  description: descriptionSchema,
 });
