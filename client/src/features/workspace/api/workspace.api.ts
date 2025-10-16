@@ -3,6 +3,8 @@ import type {
   AllWorkspaceResponseType,
   CreateWorkspaceResponseType,
   CreateWorkspaceType,
+  DeleteWorkspaceResponseType,
+  DeleteWorkspaceType,
   UpdateWorkspaceResponseType,
   UpdateWorkspaceType,
   WorkspaceByIdResponseType,
@@ -71,6 +73,19 @@ export const workspaceApi = baseApi.injectEndpoints({
         { type: "Workspace", id: "LIST" },
       ],
     }),
+    deleteWorkspace: builder.mutation<
+      DeleteWorkspaceResponseType,
+      DeleteWorkspaceType
+    >({
+      query: ({ workspaceId }) => ({
+        url: `workspace/delete/${workspaceId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (_, __, { workspaceId }) => [
+        { type: "Workspace", id: workspaceId },
+        { type: "Workspace", id: "LIST" },
+      ],
+    }),
   }),
 });
 
@@ -79,4 +94,5 @@ export const {
   useGetAllWorkspacesUserIsMemberQuery,
   useCreateWorkspaceMutation,
   useUpdateWorkspaceMutation,
+  useDeleteWorkspaceMutation,
 } = workspaceApi;

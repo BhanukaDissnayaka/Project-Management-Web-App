@@ -50,3 +50,11 @@ export type UpdateWorkspaceResponseType = {
   message: string;
   workspace: WorkspaceType;
 };
+
+export type DeleteWorkspaceType = {
+  workspaceId: string;
+};
+export type DeleteWorkspaceResponseType = {
+  message: string;
+  currentWorkspace: string;
+};
