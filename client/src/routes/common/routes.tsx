@@ -6,7 +6,7 @@ import WorkspaceMembersPage from "@/pages/WorkspaceMembersPage";
 import WorkspaceSettings from "@/pages/workspace/WorkspaceSettings";
 import PermissionRoute from "../permission.route";
 import { WorkspacePermissions } from "@/constant/permissions";
-import Forbidden from "@/pages/forbidden";
+import Forbidden from "@/pages/Forbidden";
 
 export const authenticationRoutePaths = [
   { path: AUTH_ROUTES.SIGN_UP, element: <SignUp /> },

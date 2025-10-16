@@ -24,6 +24,7 @@ import { showErrorToast, showSuccessToast } from "@/lib/toastHandler";
 import useWorkspaceId from "@/hooks/useWorkspaceId";
 import MainLoader from "@/components/shared/MainLoader";
 import { useEffect } from "react";
+import { isFetchBaseQueryError } from "@/utils/errorGuards";
 
 export default function EditWorkspaceForm() {
   const [updateWorkspace, { isLoading }] = useUpdateWorkspaceMutation();
@@ -62,9 +63,17 @@ export default function EditWorkspaceForm() {
     try {
       const res = await updateWorkspace({ workspaceId, body: values }).unwrap();
       showSuccessToast(res.message || "Workspace updated successfully");
-    } catch (err: any) {
-      console.log(err);
-      showErrorToast(err?.data?.message || "Workspace update failed");
+    } catch (err) {
+      if (isFetchBaseQueryError(err)) {
+        if (
+          typeof err.data === "object" &&
+          err.data !== null &&
+          "message" in err.data
+        ) {
+          const message = (err.data as { message: string }).message;
+          showErrorToast(message);
+        }
+      }
     }
   };
 
