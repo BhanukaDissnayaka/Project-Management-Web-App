@@ -13,8 +13,36 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WorkspacePermissions } from "@/constant/permissions";
+import { useDeleteWorkspaceMutation } from "../api/workspace.api";
+import useWorkspaceId from "@/hooks/useWorkspaceId";
+import { showErrorToast, showSuccessToast } from "@/lib/toastHandler";
+import { isFetchBaseQueryError } from "@/utils/errorGuards";
+import { useNavigate } from "react-router-dom";
 
 function DeleteWorkspace() {
+  const workspaceId = useWorkspaceId();
+  const navigate = useNavigate();
+  const [deleteWorkspace, { isLoading }] = useDeleteWorkspaceMutation();
+
+  const handleConfirm = async () => {
+    try {
+      const res = await deleteWorkspace({ workspaceId }).unwrap();
+      showSuccessToast(res.message || "Workspace deleted successfully");
+      navigate(`/workspace/${res.currentWorkspace}`);
+    } catch (err) {
+      if (isFetchBaseQueryError(err)) {
+        if (
+          typeof err.data === "object" &&
+          err.data !== null &&
+          "message" in err.data
+        ) {
+          const message = (err.data as { message: string }).message;
+          showErrorToast(message);
+        }
+      }
+    }
+  };
+
   return (
     <div>
       {/* Delete Workspace */}
@@ -32,15 +60,19 @@ function DeleteWorkspace() {
 
           <AlertDialog>
             <div className="flex justify-end">
-              <AlertDialogTrigger asChild>
-                <PermissionWrapper
-                  requiredPermission={WorkspacePermissions.DELETE_WORKSPACE}
-                >
-                  <Button variant="destructive" className="cursor-pointer">
-                    Delete Workspace
+              <PermissionWrapper
+                requiredPermission={WorkspacePermissions.DELETE_WORKSPACE}
+              >
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="destructive"
+                    className="cursor-pointer"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Deleting Workspace" : "Delete Workspace"}
                   </Button>
-                </PermissionWrapper>
-              </AlertDialogTrigger>
+                </AlertDialogTrigger>
+              </PermissionWrapper>
             </div>
 
             <AlertDialogContent>
@@ -55,7 +87,11 @@ function DeleteWorkspace() {
                 <AlertDialogCancel className="cursor-pointer">
                   Cancel
                 </AlertDialogCancel>
-                <AlertDialogAction className="bg-destructive cursor-pointer">
+                <AlertDialogAction
+                  className="bg-destructive cursor-pointer"
+                  onClick={handleConfirm}
+                  disabled={isLoading}
+                >
                   Delete
                 </AlertDialogAction>
               </AlertDialogFooter>
