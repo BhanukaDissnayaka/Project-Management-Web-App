@@ -48,6 +48,7 @@
   --color-gray-muted: var(--gray-muted);
   --color-gray-hover: var(--gray-hover);
   --color-gray-text: var(--gray-text);
+  --color-gray-border: var(--gray-border);
 }
 
 :root {
