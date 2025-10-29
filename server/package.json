@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --exec ts-node src/server.ts",
-    "seed": "ts-node src/seeders/workspace-role.seeder.ts"
+    "seed": "ts-node src/seeders/workspace-role.seeder.ts",
+    "seed-board": "ts-node src/seeders/board-role.seeder.ts"
   },
   "keywords": [],
   "author": "",
