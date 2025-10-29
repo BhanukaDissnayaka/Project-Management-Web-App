@@ -13,4 +13,5 @@ export const PROTECTED_ROUTES = {
   WORKSPACE_SETTINGS: "/workspace/:workspaceId/settings",
   MEMBERS: "/workspace/:workspaceId/members",
   FORBIDDEN: "/workspace/:workspaceId/forbidden",
+  BOARDS: "/workspace/:workspaceId/boards",
 };
