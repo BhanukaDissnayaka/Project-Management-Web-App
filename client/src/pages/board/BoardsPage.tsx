@@ -10,13 +10,12 @@ export default function BoardsPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+      <div className="flex items-center justify-between gap-2 mb-1 ">
         <div>
-          <h1 className="text-3xl font-bold ">All Boards</h1>
-          <p className="mt-1">Manage and organize your project boards</p>
+          <h1 className="text-lg md:text-3xl  font-bold ">All Boards</h1>
         </div>
         <div className="flex items-center gap-2">
-          <Button onClick={onOpen} className="cursor-pointer">
+          <Button onClick={onOpen} size="sm" className="cursor-pointer">
             <Plus className="h-4 w-4 mr-2" />
             New Board
           </Button>
