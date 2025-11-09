@@ -61,3 +61,60 @@ export const createBoardService = async (
     throw error;
   }
 };
+
+export const getBoardsInWorkspaceService = async (
+  workspaceId: string,
+  pageSize: number,
+  pageNumber: number,
+  search: string
+) => {
+  const skip = (pageNumber - 1) * pageSize;
+
+  const matchStage: any = {
+    workspace: new mongoose.Types.ObjectId(workspaceId),
+  };
+
+  if (search.trim() !== "") {
+    matchStage.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { description: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  const boards = await BoardModel.aggregate([
+    { $match: matchStage },
+    { $sort: { updatedAt: -1 } },
+
+    // Lookup members
+    {
+      $lookup: {
+        from: "boardmembers",
+        localField: "_id",
+        foreignField: "boardId",
+        as: "members",
+      },
+    },
+    {
+      $project: {
+        name: 1,
+        description: 1,
+        bgColor: 1,
+        memberCount: { $size: "$members" },
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    },
+
+    // Pagination stages
+    { $skip: skip },
+    { $limit: pageSize },
+  ]);
+  const totalBoards = await BoardModel.countDocuments(matchStage);
+
+  return {
+    boards,
+    totalBoards,
+    totalPages: Math.ceil(totalBoards / pageSize),
+    skip,
+  };
+};
