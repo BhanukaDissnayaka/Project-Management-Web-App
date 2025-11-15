@@ -4,6 +4,8 @@ import type {
   CreateBoardType,
   GetAllBoardsInWorkspaceResponseType,
   GetAllBoardsInWorkspaceType,
+  GetBoardByIdAndWorkspaceResponseType,
+  GetBoardByIdAndWorkspaceType,
 } from "../types/board.type";
 
 export const boardApi = baseApi.injectEndpoints({
@@ -36,8 +38,27 @@ export const boardApi = baseApi.injectEndpoints({
             ]
           : [{ type: "Board", id: "LIST" }],
     }),
+    getBoardByIdAndWorkspace: builder.query<
+      GetBoardByIdAndWorkspaceResponseType,
+      GetBoardByIdAndWorkspaceType
+    >({
+      query: ({ workspaceId, boardId }) => ({
+        url: `workspace/${workspaceId}/boards/${boardId}`,
+        method: "GET",
+      }),
+      providesTags: (result, __, { boardId }) =>
+        result
+          ? [
+              { type: "Board", id: boardId },
+              { type: "Board", id: "LIST" },
+            ]
+          : [{ type: "Board", id: "LIST" }],
+    }),
   }),
 });
 
-export const { useCreateBoardMutation, useGetAllBoardsInWorkspaceQuery } =
-  boardApi;
+export const {
+  useCreateBoardMutation,
+  useGetAllBoardsInWorkspaceQuery,
+  useGetBoardByIdAndWorkspaceQuery,
+} = boardApi;
