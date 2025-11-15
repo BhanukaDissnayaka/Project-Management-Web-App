@@ -95,6 +95,8 @@
   --gray-text: oklch(0.45 0.0263 256.8); /*gray600*/
   --gray-hover: oklch(0.87 0.0093 258.34); /*gray300*/
   --gray-border: oklch(0.9491 0 0); /*gray200*/
+
+  --board-nav-height: 60px;
 }
 
 .dark {
