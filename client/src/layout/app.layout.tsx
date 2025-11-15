@@ -57,8 +57,8 @@ const AppLayout = () => {
       <AppSidebar />
       <SidebarInset>
         <div className="w-full">
-          <SidebarTrigger className="text-gray-text" />
-          <div className="px-3 lg:px-20 py-3">
+          <SidebarTrigger className="text-gray-text absolute z-100" />
+          <div className="px-0 lg:px-0 py-0">
             <Outlet />
           </div>
           <CreateWorkspaceDialog />
