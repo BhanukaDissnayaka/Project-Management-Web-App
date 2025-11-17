@@ -14,9 +14,8 @@ function BoardLayout() {
   const workspaceId = useWorkspaceId();
   const boardId = useBoardId();
 
-  const { data, error, isError, isLoading, isFetching } =
+  const { error, isError, isLoading, isFetching } =
     useGetBoardByIdAndWorkspaceQuery({ workspaceId, boardId });
-  console.log(data);
   // Show toast for non-404 errors
   useEffect(() => {
     if (
@@ -26,7 +25,6 @@ function BoardLayout() {
       error.status !== 400
     ) {
       showErrorToast(error.message || "Something went wrong");
-      console.log(error);
     }
   }, [error, isError]);
 
