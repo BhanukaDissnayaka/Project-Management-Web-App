@@ -15,3 +15,7 @@ export const PROTECTED_ROUTES = {
   FORBIDDEN: "/workspace/:workspaceId/forbidden",
   BOARDS: "/workspace/:workspaceId/boards",
 };
+
+export const BOARD_ROUTES = {
+  BOARD: "/workspace/:workspaceId/boards/:boardId",
+};

@@ -1,5 +1,5 @@
 import { SignUp } from "@/pages/auth/sign-up";
-import { AUTH_ROUTES, PROTECTED_ROUTES } from "./routePaths";
+import { AUTH_ROUTES, BOARD_ROUTES, PROTECTED_ROUTES } from "./routePaths";
 import { SignIn } from "@/pages/auth/sign-in";
 import WorkspaceDashboard from "@/pages/workspace/WorkspaceDashboard";
 import WorkspaceMembersPage from "@/pages/WorkspaceMembersPage";
@@ -8,6 +8,7 @@ import PermissionRoute from "../permission.route";
 import { WorkspacePermissions } from "@/constant/permissions";
 import Forbidden from "@/pages/Forbidden";
 import BoardsPage from "@/pages/board/BoardsPage";
+import BoardPage from "@/pages/board/BoardPage";
 
 export const authenticationRoutePaths = [
   { path: AUTH_ROUTES.SIGN_UP, element: <SignUp /> },
@@ -32,4 +33,7 @@ export const protectedRoutePaths = [
   },
   { path: PROTECTED_ROUTES.FORBIDDEN, element: <Forbidden></Forbidden> },
   { path: PROTECTED_ROUTES.BOARDS, element: <BoardsPage></BoardsPage> },
+];
+export const boardRoutePaths = [
+  { path: BOARD_ROUTES.BOARD, element: <BoardPage></BoardPage> },
 ];

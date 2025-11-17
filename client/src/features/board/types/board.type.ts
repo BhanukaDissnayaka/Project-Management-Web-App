@@ -1,3 +1,5 @@
+import type { BoardPermissionsType } from "@/constant/permissions";
+
 export type BoardType = {
   name: string;
   description: string | null;
@@ -40,4 +42,26 @@ export type GetAllBoardsInWorkspaceResponseType = {
     page: number;
     totalPages: number;
   };
+};
+
+export type GetBoardByIdAndWorkspaceType = {
+  workspaceId: string;
+  boardId: string;
+};
+export type CurrentBoardMemberType = {
+  _id: string;
+  userId: string;
+  boardId: string;
+  role: {
+    _id: string;
+    name: string;
+    permissions: BoardPermissionsType[];
+  };
+  joinedAt: string;
+  createdAt: string;
+};
+export type GetBoardByIdAndWorkspaceResponseType = {
+  message: string;
+  board: BoardType;
+  boardMember: CurrentBoardMemberType;
 };

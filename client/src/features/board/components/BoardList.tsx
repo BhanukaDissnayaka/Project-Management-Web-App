@@ -6,7 +6,7 @@ import useWorkspaceId from "@/hooks/useWorkspaceId";
 import { isFetchBaseQueryError } from "@/utils/errorGuards";
 import { showErrorToast } from "@/lib/toastHandler";
 import MainLoader from "@/components/shared/MainLoader";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import CustomPagination from "@/components/shared/Pagination";
 import useDebounce from "@/hooks/useDebounce";
 import BoardCard from "./BoardCard";
@@ -83,7 +83,9 @@ function BoardList() {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2  xl:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-4 gap-6">
             {boards.map((board) => (
-              <BoardCard board={board} key={board._id} />
+              <Link to={board._id} key={board._id}>
+                <BoardCard board={board} key={board._id} />
+              </Link>
             ))}
           </div>
 

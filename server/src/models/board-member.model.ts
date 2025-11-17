@@ -1,9 +1,11 @@
 import mongoose, { Document, Mongoose, Schema } from "mongoose";
+import { BoardDocument } from "./board.model";
+import { BoardRoleDocument } from "./board-role-permission.model";
 
 export interface BoardMemberDocument extends Document {
   userId: mongoose.Types.ObjectId;
   boardId: mongoose.Types.ObjectId;
-  role: mongoose.Types.ObjectId;
+  role: BoardRoleDocument;
   joinedAt: Date;
 }
 

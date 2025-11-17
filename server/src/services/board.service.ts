@@ -118,3 +118,24 @@ export const getBoardsInWorkspaceService = async (
     skip,
   };
 };
+
+export const getBoardByIdAndWorkspaceService = async (
+  workspaceId: string,
+  boardId: string,
+  userId: string
+) => {
+  const board = await BoardModel.findOne({
+    _id: boardId,
+    workspace: workspaceId,
+  });
+  if (!board) {
+    throw new NotFoundException(
+      "Board not found or does not belong to the specified workspace"
+    );
+  }
+  const currentBoardMember = await BoardMemberModel.findOne({
+    userId,
+    boardId,
+  }).populate("role");
+  return { board, currentBoardMember };
+};
