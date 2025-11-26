@@ -139,3 +139,29 @@ export const getBoardByIdAndWorkspaceService = async (
   }).populate("role");
   return { board, currentBoardMember };
 };
+
+export const updateBoardService = async (
+  workspaceId: string,
+  boardId: string,
+  body: {
+    name: string;
+    description?: string;
+    bgColor?: BoardColorValueType | undefined;
+  }
+) => {
+  const { name, description, bgColor } = body;
+  const board = await BoardModel.findOne({
+    _id: boardId,
+    workspace: workspaceId,
+  });
+  if (!board) {
+    throw new NotFoundException(
+      "Board not found or does not belong to the specified workspace"
+    );
+  }
+  if (name) board.name = name;
+  if (description) board.description = description;
+  if (bgColor) board.bgColor = bgColor;
+  await board.save();
+  return { board };
+};

@@ -16,3 +16,8 @@ export const createBoardSchema = z.object({
   description: boardDescriptionSchema,
   bgColor: bgColorSchema,
 });
+export const updateBoardSchema = z.object({
+  name: boardNameSchema,
+  description: boardDescriptionSchema,
+  bgColor: bgColorSchema,
+});

@@ -2,9 +2,7 @@ import {
   LogOut,
   MoreHorizontalIcon,
   Settings,
-  Tags,
   Users,
-  Wallpaper,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -18,37 +16,55 @@ import { Link } from "react-router-dom";
 import useWorkspaceId from "@/hooks/useWorkspaceId";
 import useBoardId from "@/hooks/useBoardId";
 import { useGetBoardByIdAndWorkspaceQuery } from "../api/board.api";
-type BoardMenuType = {
-  title: string;
-  url?: string;
-  action?: string;
-  icon: LucideIcon;
-};
+import useBoardSettings from "../hooks/useBoardSettings";
+import { useMemo } from "react";
+import { useBoardPermissions } from "@/hooks/useBoardPermissions";
+import { BoardPermissions } from "@/constant/permissions";
+type BoardMenuType =
+  | {
+      title: string;
+      icon: LucideIcon;
+      url: string;
+      action?: never;
+    }
+  | {
+      title: string;
+      icon: LucideIcon;
+      action: () => void;
+      url?: never;
+    };
 
 function BoardNav() {
   const workspaceId = useWorkspaceId();
   const boardId = useBoardId();
+  const { onOpen } = useBoardSettings();
+  const canEditBoard = useBoardPermissions(BoardPermissions.EDIT_BOARD);
 
-  const boardMenu: BoardMenuType[] = [
-    {
-      title: "Settings",
-      url: `/workspace/${workspaceId}/boards/${boardId}/settings`,
-      icon: Settings,
-    },
-    {
-      title: "Members",
-      url: `/workspace/${workspaceId}/boards/${boardId}/members`,
-      icon: Users,
-    },
-    {
-      title: " Change Background",
-      icon: Wallpaper,
-    },
-    {
-      title: "Labels",
-      icon: Tags,
-    },
-  ];
+  const boardMenu = useMemo(
+    () =>
+      [
+        ...(canEditBoard
+          ? [
+              {
+                title: "Settings",
+                action: onOpen,
+                icon: Settings,
+              },
+            ]
+          : []),
+
+        {
+          title: "Members",
+          url: `/workspace/${workspaceId}/boards/${boardId}/members`,
+          icon: Users,
+        },
+      ] as BoardMenuType[],
+    [onOpen, workspaceId, boardId]
+  );
+
+  function closeRadixMenus() {
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+  }
 
   const { data } = useGetBoardByIdAndWorkspaceQuery({ workspaceId, boardId });
 
@@ -62,25 +78,35 @@ function BoardNav() {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="min-w-70">
             {boardMenu.map((item) => (
-              <DropdownMenuItem key={item.title}>
+              <div key={item.title}>
                 {item.url ? (
-                  <Link to={item.url} className="w-full">
-                    <div className="flex gap-x-2">
+                  <DropdownMenuItem>
+                    <Link to={item.url} className="w-full">
+                      <div className="flex gap-x-2">
+                        <span>
+                          <item.icon />
+                        </span>
+                        {item.title}
+                      </div>
+                    </Link>
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem
+                    onSelect={(e) => {
+                      e.preventDefault();
+                      closeRadixMenus();
+                      item.action?.();
+                    }}
+                  >
+                    <button className="w-full flex gap-x-2 text-left">
                       <span>
                         <item.icon />
                       </span>
                       {item.title}
-                    </div>
-                  </Link>
-                ) : (
-                  <>
-                    <span>
-                      <item.icon />
-                    </span>
-                    {item.title}
-                  </>
+                    </button>
+                  </DropdownMenuItem>
                 )}
-              </DropdownMenuItem>
+              </div>
             ))}
 
             <DropdownMenuSeparator />

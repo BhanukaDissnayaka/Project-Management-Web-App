@@ -1,7 +1,10 @@
 import { asyncHandler } from "../middlewares/asyncHandler";
 import { Request, Response } from "express";
 import { workspaceIdSchema } from "../validation/workspace.validation";
-import { createBoardSchema } from "../validation/board.validation";
+import {
+  createBoardSchema,
+  updateBoardSchema,
+} from "../validation/board.validation";
 import { getMemberInWorkspaceService } from "../services/member.service";
 import { checkWorkspacePermission } from "../utils/check-workspace-permission";
 import { WorkspacePermissions } from "../enums/workspace-role.enum";
@@ -9,6 +12,7 @@ import {
   createBoardService,
   getBoardByIdAndWorkspaceService,
   getBoardsInWorkspaceService,
+  updateBoardService,
 } from "../services/board.service";
 import { HTTPSTATUS } from "../config/http.config";
 import { getMemberInBoardService } from "../services/board-member.service";
@@ -78,6 +82,22 @@ export const getBoardByIdAndWorkspaceController = asyncHandler(
       message: "Board fetched successfully",
       board,
       currentBoardMember,
+    });
+  }
+);
+
+export const updateBoardController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
+    const boardId = req.params.boardId;
+    const userId = req.user?._id;
+    const body = updateBoardSchema.parse(req.body);
+    const { member } = await getMemberInBoardService(userId, boardId);
+    checkBoardPermission(member.role, [BoardPermissions.EDIT_BOARD]);
+    const { board } = await updateBoardService(workspaceId, boardId, body);
+    return res.status(HTTPSTATUS.OK).json({
+      message: "Board updated successfully",
+      board,
     });
   }
 );
