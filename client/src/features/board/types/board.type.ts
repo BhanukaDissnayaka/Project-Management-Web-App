@@ -1,9 +1,10 @@
+import type { BoardColorValueType } from "@/constant/board";
 import type { BoardPermissionsType } from "@/constant/permissions";
 
 export type BoardType = {
   name: string;
   description: string | null;
-  bgColor: string;
+  bgColor: BoardColorValueType;
   workspace: string;
   createdBy: string;
   createdAt: Date;
@@ -63,5 +64,5 @@ export type CurrentBoardMemberType = {
 export type GetBoardByIdAndWorkspaceResponseType = {
   message: string;
   board: BoardType;
-  boardMember: CurrentBoardMemberType;
+  currentBoardMember: CurrentBoardMemberType;
 };
