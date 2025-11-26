@@ -6,6 +6,8 @@ import type {
   GetAllBoardsInWorkspaceType,
   GetBoardByIdAndWorkspaceResponseType,
   GetBoardByIdAndWorkspaceType,
+  UpdateBoardResponseType,
+  UpdateBoardType,
 } from "../types/board.type";
 
 export const boardApi = baseApi.injectEndpoints({
@@ -54,6 +56,18 @@ export const boardApi = baseApi.injectEndpoints({
             ]
           : [{ type: "Board", id: "LIST" }],
     }),
+
+    updateBoard: builder.mutation<UpdateBoardResponseType, UpdateBoardType>({
+      query: ({ workspaceId, boardId, body }) => ({
+        url: `workspace/${workspaceId}/boards/${boardId}/update`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: (_, __, { boardId }) => [
+        { type: "Board", id: boardId },
+        { type: "Board", id: "LIST" },
+      ],
+    }),
   }),
 });
 
@@ -61,4 +75,5 @@ export const {
   useCreateBoardMutation,
   useGetAllBoardsInWorkspaceQuery,
   useGetBoardByIdAndWorkspaceQuery,
+  useUpdateBoardMutation,
 } = boardApi;

@@ -66,3 +66,13 @@ export type GetBoardByIdAndWorkspaceResponseType = {
   board: BoardType;
   currentBoardMember: CurrentBoardMemberType;
 };
+
+export type UpdateBoardType = {
+  workspaceId: string;
+  boardId: string;
+  body: { name: string; description: string; bgColor?: BoardColorValueType };
+};
+export type UpdateBoardResponseType = {
+  board: BoardType;
+  message: string;
+};
