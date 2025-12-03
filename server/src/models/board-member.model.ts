@@ -3,6 +3,7 @@ import { BoardDocument } from "./board.model";
 import { BoardRoleDocument } from "./board-role-permission.model";
 
 export interface BoardMemberDocument extends Document {
+  workspaceMemberId: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
   boardId: mongoose.Types.ObjectId;
   role: BoardRoleDocument;
@@ -11,10 +12,15 @@ export interface BoardMemberDocument extends Document {
 
 const BoardMemberSchema = new Schema<BoardMemberDocument>(
   {
+    workspaceMemberId: {
+      type: Schema.Types.ObjectId,
+      ref: "WorkspaceMember",
+      required: true,
+    },
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: true, // denormalized for performance
     },
     boardId: {
       type: Schema.Types.ObjectId,

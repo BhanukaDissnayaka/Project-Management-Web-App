@@ -7,6 +7,7 @@ import UserModel from "../models/user.model";
 import WorkspaceModel from "../models/workspace.model";
 import { NotFoundException } from "../utils/appError";
 import { BoardColorValueType } from "../enums/board.enum";
+import WorkspaceMemberModel from "../models/workspace-member.model";
 
 export const createBoardService = async (
   userId: string,
@@ -24,6 +25,13 @@ export const createBoardService = async (
     const user = await UserModel.findById(userId).session(session);
     if (!user) {
       throw new NotFoundException("User not found");
+    }
+    const workspaceMember = await WorkspaceMemberModel.findOne({
+      userId,
+      workspaceId,
+    });
+    if (!workspaceMember) {
+      throw new NotFoundException("You are not a member of this workspace");
     }
     const workspace = await WorkspaceModel.findById(workspaceId).session(
       session
@@ -46,6 +54,7 @@ export const createBoardService = async (
     });
     await board.save({ session });
     const member = new BoardMemberModel({
+      workspaceMemberId: workspaceMember._id,
       userId: user._id,
       boardId: board._id,
       role: boardAdminRole._id,
