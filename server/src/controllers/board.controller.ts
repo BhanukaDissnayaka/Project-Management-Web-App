@@ -71,8 +71,12 @@ export const getBoardByIdAndWorkspaceController = asyncHandler(
     const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
     const boardId = req.params.boardId;
     const userId = req.user?._id;
-    const { member } = await getMemberInBoardService(userId, boardId);
-    checkBoardPermission(member.role, [BoardPermissions.ADD_BOARD_MEMBER]);
+    const { boardMember } = await getMemberInBoardService(
+      userId,
+      boardId,
+      workspaceId
+    );
+    checkBoardPermission(boardMember.role, [BoardPermissions.ADD_BOARD_MEMBER]);
     const { board, currentBoardMember } = await getBoardByIdAndWorkspaceService(
       workspaceId,
       boardId,
@@ -92,8 +96,12 @@ export const updateBoardController = asyncHandler(
     const boardId = req.params.boardId;
     const userId = req.user?._id;
     const body = updateBoardSchema.parse(req.body);
-    const { member } = await getMemberInBoardService(userId, boardId);
-    checkBoardPermission(member.role, [BoardPermissions.EDIT_BOARD]);
+    const { boardMember } = await getMemberInBoardService(
+      userId,
+      boardId,
+      workspaceId
+    );
+    checkBoardPermission(boardMember.role, [BoardPermissions.EDIT_BOARD]);
     const { board } = await updateBoardService(workspaceId, boardId, body);
     return res.status(HTTPSTATUS.OK).json({
       message: "Board updated successfully",
