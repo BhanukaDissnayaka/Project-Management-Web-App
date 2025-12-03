@@ -3,7 +3,7 @@ import { BoardRoles } from "../enums/board-role.enum";
 import BoardMemberModel from "../models/board-member.model";
 import BoardRoleModel from "../models/board-role-permission.model";
 import BoardModel from "../models/board.model";
-import UserModel from "../models/user.model";
+import UserModel, { UserDocument } from "../models/user.model";
 import WorkspaceModel from "../models/workspace.model";
 import { NotFoundException } from "../utils/appError";
 import { BoardColorValueType } from "../enums/board.enum";
@@ -173,4 +173,62 @@ export const updateBoardService = async (
   if (bgColor) board.bgColor = bgColor;
   await board.save();
   return { board };
+};
+
+export const getAvailableMembersService = async (
+  workspaceId: string,
+  boardId: string,
+  search: string,
+  pageSize: number,
+  pageNumber: number
+) => {
+  const board = await BoardModel.findOne({
+    _id: boardId,
+    workspace: workspaceId,
+  });
+  if (!board) {
+    throw new NotFoundException(
+      "Board not found or does not belong to the specified workspace"
+    );
+  }
+  const skip = (pageNumber - 1) * pageSize;
+
+  const workspaceMembers = await WorkspaceMemberModel.find({
+    workspaceId,
+  })
+    .skip(skip)
+    .limit(pageSize)
+    .populate<{ userId: UserDocument }>({
+      path: "userId",
+      select: "name email profilePicture",
+      match: search
+        ? {
+            $or: [
+              { name: { $regex: search, $options: "i" } },
+              { email: { $regex: search, $options: "i" } },
+            ],
+          }
+        : {},
+    });
+  const boardMembers = await BoardMemberModel.find({ boardId });
+  const boardMemberIds = new Set(
+    boardMembers.map((m) => String(m.workspaceMemberId))
+  );
+  const totalMembers = await WorkspaceMemberModel.countDocuments({
+    workspaceId,
+  });
+  const result = workspaceMembers.map((wm) => ({
+    userId: wm.userId._id,
+    name: wm.userId.name,
+    email: wm.userId.email,
+    avatar: wm.userId.profilePicture,
+    workspaceRole: wm.role,
+    isAlreadyMember: boardMemberIds.has(String(wm._id)),
+  }));
+  return {
+    members: result,
+    totalMembers,
+    totalPages: Math.ceil(totalMembers / pageSize),
+    skip,
+  };
 };
