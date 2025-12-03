@@ -13,6 +13,6 @@ boardRoutes.post("/create", createBoardController);
 boardRoutes.post("/:boardId/update", updateBoardController);
 boardRoutes.get("/all", getBoardsInWorkspaceController);
 boardRoutes.get("/:boardId", getBoardByIdAndWorkspaceController);
-boardRoutes.get("/:boardId/available-memebers", getAvailableMembersController);
+boardRoutes.get("/:boardId/available-members", getAvailableMembersController);
 
 export default boardRoutes;
