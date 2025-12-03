@@ -11,6 +11,7 @@ export const baseApi = createApi({
     "WorkspaceMember",
     "SearchUser",
     "Board",
+    "AvailbleWorkspaceMembers",
   ],
   endpoints: () => ({}),
 });
