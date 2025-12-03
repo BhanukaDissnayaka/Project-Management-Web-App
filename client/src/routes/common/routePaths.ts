@@ -18,4 +18,5 @@ export const PROTECTED_ROUTES = {
 
 export const BOARD_ROUTES = {
   BOARD: "/workspace/:workspaceId/boards/:boardId",
+  BOARD_MEMBERS: "/workspace/:workspaceId/boards/:boardId/members",
 };

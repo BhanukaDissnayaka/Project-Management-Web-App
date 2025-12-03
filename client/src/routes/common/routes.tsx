@@ -9,6 +9,7 @@ import { WorkspacePermissions } from "@/constant/permissions";
 import Forbidden from "@/pages/Forbidden";
 import BoardsPage from "@/pages/board/BoardsPage";
 import BoardPage from "@/pages/board/BoardPage";
+import BoardMembersPage from "@/pages/board-members/BoardMembersPage";
 
 export const authenticationRoutePaths = [
   { path: AUTH_ROUTES.SIGN_UP, element: <SignUp /> },
@@ -36,4 +37,8 @@ export const protectedRoutePaths = [
 ];
 export const boardRoutePaths = [
   { path: BOARD_ROUTES.BOARD, element: <BoardPage></BoardPage> },
+  {
+    path: BOARD_ROUTES.BOARD_MEMBERS,
+    element: <BoardMembersPage></BoardMembersPage>,
+  },
 ];
