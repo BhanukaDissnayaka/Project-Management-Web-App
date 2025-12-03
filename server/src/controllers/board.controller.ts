@@ -13,6 +13,7 @@ import { checkWorkspacePermission } from "../utils/check-workspace-permission";
 import { WorkspacePermissions } from "../enums/workspace-role.enum";
 import {
   createBoardService,
+  getAvailableMembersService,
   getBoardByIdAndWorkspaceService,
   getBoardsInWorkspaceService,
   updateBoardService,
@@ -109,6 +110,42 @@ export const updateBoardController = asyncHandler(
     return res.status(HTTPSTATUS.OK).json({
       message: "Board updated successfully",
       board,
+    });
+  }
+);
+
+export const getAvailableMembersController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
+    const boardId = boardIdSchema.parse(req.params.boardId);
+    const userId = req.user?._id;
+    const pageSize = parseInt(req.query.pageSize as string) || 8;
+    const pageNumber = parseInt(req.query.page as string) || 1;
+    const search = (req.query.search as string) || "";
+    const { boardMember } = await getMemberInBoardService(
+      userId,
+      boardId,
+      workspaceId
+    );
+    checkBoardPermission(boardMember.role, [BoardPermissions.ADD_BOARD_MEMBER]);
+    const { members, totalMembers, totalPages, skip } =
+      await getAvailableMembersService(
+        workspaceId,
+        boardId,
+        search,
+        pageSize,
+        pageNumber
+      );
+    return res.status(HTTPSTATUS.OK).json({
+      message: "Availbale Members fetched successfully",
+      members,
+      pagination: {
+        total: totalMembers,
+        limit: pageSize,
+        page: pageNumber,
+        totalPages,
+        skip,
+      },
     });
   }
 );

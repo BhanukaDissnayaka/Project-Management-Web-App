@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createBoardController,
+  getAvailableMembersController,
   getBoardByIdAndWorkspaceController,
   getBoardsInWorkspaceController,
   updateBoardController,
@@ -12,5 +13,6 @@ boardRoutes.post("/create", createBoardController);
 boardRoutes.post("/:boardId/update", updateBoardController);
 boardRoutes.get("/all", getBoardsInWorkspaceController);
 boardRoutes.get("/:boardId", getBoardByIdAndWorkspaceController);
+boardRoutes.get("/:boardId/available-memebers", getAvailableMembersController);
 
 export default boardRoutes;
