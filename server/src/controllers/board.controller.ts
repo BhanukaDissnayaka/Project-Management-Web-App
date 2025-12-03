@@ -119,33 +119,16 @@ export const getAvailableMembersController = asyncHandler(
     const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
     const boardId = boardIdSchema.parse(req.params.boardId);
     const userId = req.user?._id;
-    const pageSize = parseInt(req.query.pageSize as string) || 8;
-    const pageNumber = parseInt(req.query.page as string) || 1;
-    const search = (req.query.search as string) || "";
     const { boardMember } = await getMemberInBoardService(
       userId,
       boardId,
       workspaceId
     );
     checkBoardPermission(boardMember.role, [BoardPermissions.ADD_BOARD_MEMBER]);
-    const { members, totalMembers, totalPages, skip } =
-      await getAvailableMembersService(
-        workspaceId,
-        boardId,
-        search,
-        pageSize,
-        pageNumber
-      );
+    const { members } = await getAvailableMembersService(workspaceId, boardId);
     return res.status(HTTPSTATUS.OK).json({
       message: "Availbale Members fetched successfully",
       members,
-      pagination: {
-        total: totalMembers,
-        limit: pageSize,
-        page: pageNumber,
-        totalPages,
-        skip,
-      },
     });
   }
 );

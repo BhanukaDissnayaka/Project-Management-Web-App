@@ -177,10 +177,7 @@ export const updateBoardService = async (
 
 export const getAvailableMembersService = async (
   workspaceId: string,
-  boardId: string,
-  search: string,
-  pageSize: number,
-  pageNumber: number
+  boardId: string
 ) => {
   const board = await BoardModel.findOne({
     _id: boardId,
@@ -191,34 +188,18 @@ export const getAvailableMembersService = async (
       "Board not found or does not belong to the specified workspace"
     );
   }
-  const skip = (pageNumber - 1) * pageSize;
-
   const workspaceMembers = await WorkspaceMemberModel.find({
     workspaceId,
-  })
-    .skip(skip)
-    .limit(pageSize)
-    .populate<{ userId: UserDocument }>({
-      path: "userId",
-      select: "name email profilePicture",
-      match: search
-        ? {
-            $or: [
-              { name: { $regex: search, $options: "i" } },
-              { email: { $regex: search, $options: "i" } },
-            ],
-          }
-        : {},
-    });
+  }).populate<{ userId: UserDocument }>({
+    path: "userId",
+    select: "name email profilePicture",
+  });
   const boardMembers = await BoardMemberModel.find({ boardId });
   const boardMemberIds = new Set(
     boardMembers.map((m) => String(m.workspaceMemberId))
   );
-  const totalMembers = await WorkspaceMemberModel.countDocuments({
-    workspaceId,
-  });
   const result = workspaceMembers.map((wm) => ({
-    userId: wm.userId._id,
+    _id: wm.userId._id,
     name: wm.userId.name,
     email: wm.userId.email,
     avatar: wm.userId.profilePicture,
@@ -227,8 +208,5 @@ export const getAvailableMembersService = async (
   }));
   return {
     members: result,
-    totalMembers,
-    totalPages: Math.ceil(totalMembers / pageSize),
-    skip,
   };
 };
