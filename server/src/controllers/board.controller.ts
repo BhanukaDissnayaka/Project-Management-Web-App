@@ -4,6 +4,7 @@ import { workspaceIdSchema } from "../validation/workspace.validation";
 import {
   addMemberToBoardSchema,
   boardIdSchema,
+  changeBoardMemberRoleSchema,
   createBoardSchema,
   updateBoardSchema,
 } from "../validation/board.validation";
@@ -12,6 +13,7 @@ import { checkWorkspacePermission } from "../utils/check-workspace-permission";
 import { WorkspacePermissions } from "../enums/workspace-role.enum";
 import {
   addMemberToBoardService,
+  changeBoardMemberRoleService,
   createBoardService,
   getAvailableMembersService,
   getBoardByIdAndWorkspaceService,
@@ -178,6 +180,33 @@ export const getBoardMembersController = asyncHandler(
       message: "Member added to Board Successfully",
       boardMembers,
       boardRoles,
+    });
+  }
+);
+
+export const changeBoardMemberRoleController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
+    const boardId = boardIdSchema.parse(req.params.boardId);
+    const userId = req.user?._id;
+    const { userId: targetUserId, roleId } = changeBoardMemberRoleSchema.parse(
+      req.body
+    );
+    const { boardMember } = await getMemberInBoardService(
+      userId,
+      boardId,
+      workspaceId
+    );
+
+    const { updatedBoardMember } = await changeBoardMemberRoleService(
+      workspaceId,
+      boardId,
+      targetUserId,
+      roleId
+    );
+    return res.status(HTTPSTATUS.OK).json({
+      message: "Member Role changed successfully",
+      updatedBoardMember,
     });
   }
 );
