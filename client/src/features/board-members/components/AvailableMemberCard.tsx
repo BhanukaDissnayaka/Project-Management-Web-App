@@ -6,14 +6,42 @@ import PermissionWrapper from "@/components/shared/BoardPermissionWrapper";
 import { Button } from "@/components/ui/button";
 import { BoardPermissions } from "@/constant/permissions";
 import { UserCheck, UserRoundPlus } from "lucide-react";
+import { useAddMemberToBoardMutation } from "../api/board-members.api";
+import useWorkspaceId from "@/hooks/useWorkspaceId";
+import useBoardId from "@/hooks/useBoardId";
+import { showErrorToast, showSuccessToast } from "@/lib/toastHandler";
+import { isFetchBaseQueryError } from "@/utils/errorGuards";
 
 function AvailableMemberCard({
   member,
 }: {
   member: AvailableWorkspaceMemberType;
 }) {
-  const isLoading = false;
+  const workspaceId = useWorkspaceId();
+  const boardId = useBoardId();
+  const [addMemberToBoard, { isLoading }] = useAddMemberToBoardMutation();
 
+  const addUserToBoardHandler = async (userId: string) => {
+    try {
+      await addMemberToBoard({
+        workspaceId,
+        boardId,
+        targetUserId: userId,
+      }).unwrap();
+      showSuccessToast("User successfully added to Board");
+    } catch (err) {
+      if (isFetchBaseQueryError(err)) {
+        if (
+          typeof err.data === "object" &&
+          err.data !== null &&
+          "message" in err.data
+        ) {
+          const message = (err.data as { message: string }).message;
+          showErrorToast(message);
+        }
+      }
+    }
+  };
   return (
     <div
       key={member._id}
@@ -43,6 +71,7 @@ function AvailableMemberCard({
           size="sm"
           className="cursor-pointer"
           disabled={member.isAlreadyMember || isLoading}
+          onClick={() => addUserToBoardHandler(member._id)}
         >
           {member.isAlreadyMember ? (
             <UserCheck strokeWidth={2.5} />
