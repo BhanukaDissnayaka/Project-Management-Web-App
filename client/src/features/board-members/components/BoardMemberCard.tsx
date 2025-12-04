@@ -19,6 +19,12 @@ import { Button } from "@/components/ui/button";
 import { UserRoundX } from "lucide-react";
 import PermissionWrapper from "@/components/shared/BoardPermissionWrapper";
 import { BoardPermissions } from "@/constant/permissions";
+import { useChangeBoardMemberRoleMutation } from "../api/board-members.api";
+import useWorkspaceId from "@/hooks/useWorkspaceId";
+import useBoardId from "@/hooks/useBoardId";
+import { showErrorToast, showSuccessToast } from "@/lib/toastHandler";
+import { isFetchBaseQueryError } from "@/utils/errorGuards";
+import MainLoader from "@/components/shared/MainLoader";
 
 function BoardMemberCard({
   boardMember,
@@ -28,10 +34,43 @@ function BoardMemberCard({
   boardRoles: BoardRoleType[];
 }) {
   const { userId: user, role } = boardMember;
-  const [currentRole] = useState(role);
+  const [currentRole, setCurrentRole] = useState(role);
+  const workspaceId = useWorkspaceId();
+  const boardId = useBoardId();
+  const [changeBoardMemberRole, { isLoading }] =
+    useChangeBoardMemberRoleMutation();
+
+  const handleSelect = async (roleId: string) => {
+    try {
+      const res = await changeBoardMemberRole({
+        workspaceId,
+        boardId,
+        roleId,
+        userId: user._id,
+      }).unwrap();
+      setCurrentRole(res.updatedBoardMember.role);
+      showSuccessToast("Member's role changed successfully");
+    } catch (err) {
+      if (isFetchBaseQueryError(err)) {
+        if (
+          typeof err.data === "object" &&
+          err.data !== null &&
+          "message" in err.data
+        ) {
+          const message = (err.data as { message: string }).message;
+          showErrorToast(message);
+        }
+      }
+    }
+  };
 
   return (
     <>
+      {isLoading && (
+        <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-10 flex items-center justify-center">
+          <MainLoader></MainLoader>
+        </div>
+      )}
       <div className="flex items-center justify-between mt-4 mb-2">
         <div className="flex items-center space-x-3">
           <div>
@@ -63,7 +102,11 @@ function BoardMemberCard({
           <PermissionWrapper
             requiredPermission={BoardPermissions.CHANGE_BOARD_MEMBER_ROLE}
           >
-            <Select value={currentRole._id}>
+            <Select
+              disabled={isLoading}
+              value={currentRole._id}
+              onValueChange={(roleId) => handleSelect(roleId)}
+            >
               <SelectTrigger className="w-[100px] lg:w-[150px]">
                 <SelectValue placeholder={currentRole.name.toLowerCase()} />
               </SelectTrigger>
