@@ -32,3 +32,34 @@ export type AddMemberToBoardResponseType = {
   message: string;
   newMember: AddedBoardMemberType;
 };
+export type GetBoardMembersType = {
+  workspaceId: string;
+  boardId: string;
+};
+export type BoardMemberType = {
+  _id: string;
+  workspaceMemberId: string;
+  userId: {
+    _id: string;
+    name: string;
+    email: string;
+    profilePicture: string;
+  };
+  boardId: string;
+  role: {
+    _id: string;
+    name: string;
+  };
+  joinedAt: string;
+  createdAt: string;
+  updatedAt: string;
+};
+export type BoardRoleType = {
+  _id: string;
+  name: string;
+};
+export type GetBoardMembersResponseType = {
+  message: string;
+  boardMembers: BoardMemberType[];
+  boardRoles: BoardRoleType[];
+};
