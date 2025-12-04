@@ -71,7 +71,7 @@ function AvailableMemberCard({
           size="sm"
           className="cursor-pointer"
           disabled={member.isAlreadyMember || isLoading}
-          onClick={() => addUserToBoardHandler(member._id)}
+          onClick={() => addUserToBoardHandler(member.userId)}
         >
           {member.isAlreadyMember ? (
             <UserCheck strokeWidth={2.5} />

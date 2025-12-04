@@ -5,6 +5,7 @@ export type GetAvailableWorkspaceMembersType = {
 
 export type AvailableWorkspaceMemberType = {
   _id: string;
+  userId: string;
   name: string;
   email: string;
   avatar: string;
