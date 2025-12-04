@@ -267,3 +267,23 @@ export const addMemberToBoardService = async (
 
   return { newMember };
 };
+
+export const getBoardMembersService = async (
+  workspaceId: string,
+  boardId: string
+) => {
+  const board = await BoardModel.findOne({
+    _id: boardId,
+    workspace: workspaceId,
+  });
+  if (!board) {
+    throw new NotFoundException(
+      "Board not found or does not belong to the specified workspace"
+    );
+  }
+  const boardMembers = await BoardMemberModel.find({ boardId })
+    .populate("userId", "name email profilePicture -password")
+    .populate("role", "name");
+  const boardRoles = await BoardRoleModel.find({}, { name: 1, _id: 1 });
+  return { boardMembers, boardRoles };
+};

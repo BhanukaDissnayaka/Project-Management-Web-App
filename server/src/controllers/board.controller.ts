@@ -15,6 +15,7 @@ import {
   createBoardService,
   getAvailableMembersService,
   getBoardByIdAndWorkspaceService,
+  getBoardMembersService,
   getBoardsInWorkspaceService,
   updateBoardService,
 } from "../services/board.service";
@@ -153,6 +154,30 @@ export const addMemberToBoardController = asyncHandler(
     return res.status(HTTPSTATUS.OK).json({
       message: "Member added to Board Successfully",
       newMember,
+    });
+  }
+);
+export const getBoardMembersController = asyncHandler(
+  async (req: Request, res: Response) => {
+    const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
+    const boardId = boardIdSchema.parse(req.params.boardId);
+    const userId = req.user?._id;
+    const { boardMember } = await getMemberInBoardService(
+      userId,
+      boardId,
+      workspaceId
+    );
+    checkBoardPermission(boardMember.role, [
+      BoardPermissions.CHANGE_BOARD_MEMBER_ROLE,
+    ]);
+    const { boardMembers, boardRoles } = await getBoardMembersService(
+      workspaceId,
+      boardId
+    );
+    return res.status(HTTPSTATUS.OK).json({
+      message: "Member added to Board Successfully",
+      boardMembers,
+      boardRoles,
     });
   }
 );
