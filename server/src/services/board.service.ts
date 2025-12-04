@@ -5,9 +5,14 @@ import BoardRoleModel from "../models/board-role-permission.model";
 import BoardModel from "../models/board.model";
 import UserModel, { UserDocument } from "../models/user.model";
 import WorkspaceModel from "../models/workspace.model";
-import { NotFoundException } from "../utils/appError";
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+} from "../utils/appError";
 import { BoardColorValueType } from "../enums/board.enum";
 import WorkspaceMemberModel from "../models/workspace-member.model";
+import { HTTPSTATUS } from "../config/http.config";
 
 export const createBoardService = async (
   userId: string,
@@ -209,4 +214,55 @@ export const getAvailableMembersService = async (
   return {
     members: result,
   };
+};
+
+export const addMemberToBoardService = async (
+  userId: string,
+  workspaceId: string,
+  boardId: string
+) => {
+  const board = await BoardModel.findOne({
+    _id: boardId,
+    workspace: workspaceId,
+  });
+  if (!board) {
+    throw new NotFoundException(
+      "Board not found or does not belong to the specified workspace"
+    );
+  }
+  const user = await UserModel.findById(userId);
+  if (!user) {
+    throw new NotFoundException("User Not Found");
+  }
+  const workspaceMember = await WorkspaceMemberModel.findOne({
+    userId: user._id,
+    workspaceId: workspaceId,
+  });
+  if (!workspaceMember) {
+    throw new ForbiddenException("You are not a member of this workspace");
+  }
+  const existingMember = await BoardMemberModel.findOne({
+    workspaceMemberId: workspaceMember._id,
+    boardId: board._id,
+  });
+  if (existingMember) {
+    throw new BadRequestException(
+      "This user is already a member of this Board"
+    );
+  }
+  const boardRole = await BoardRoleModel.findOne({
+    name: BoardRoles.BOARD_MEMBER,
+  });
+  if (!boardRole) {
+    throw new NotFoundException("Role Not Found");
+  }
+  const newMember = new BoardMemberModel({
+    workspaceMemberId: workspaceMember._id,
+    userId: user._id,
+    boardId: board._id,
+    role: boardRole._id,
+  });
+  await newMember.save();
+
+  return { newMember };
 };

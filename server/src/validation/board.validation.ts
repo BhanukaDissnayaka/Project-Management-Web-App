@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { BoardColor } from "../enums/board.enum";
+import { isValidObjectId } from "mongoose";
 export const boardNameSchema = z
   .string()
   .trim()
@@ -20,4 +21,14 @@ export const updateBoardSchema = z.object({
   name: boardNameSchema,
   description: boardDescriptionSchema,
   bgColor: bgColorSchema,
+});
+
+export const addMemberToBoardSchema = z.object({
+  userId: z
+    .string()
+    .trim()
+    .min(1, { message: "User ID is required" })
+    .refine((val) => isValidObjectId(val), {
+      message: "Invalid user ID",
+    }),
 });
