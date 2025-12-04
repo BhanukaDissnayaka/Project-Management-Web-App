@@ -50,7 +50,9 @@ function BoardLayout() {
     <div>
       <BoardNav />
       <div className="pt-[var(--board-nav-height)]">
-        <Outlet />
+        <div className=" p-5 lg:px-15 ">
+          <Outlet />
+        </div>
       </div>
     </div>
   );
