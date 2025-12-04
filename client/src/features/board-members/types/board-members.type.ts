@@ -15,3 +15,19 @@ export type GetAvailableWorkspaceMembersResponseType = {
   message: string;
   members: AvailableWorkspaceMemberType[];
 };
+
+export type AddMemberToBoardType = {
+  workspaceId: string;
+  boardId: string;
+  targetUserId: string;
+};
+export type AddedBoardMemberType = {
+  workspaceMemberId: string;
+  boardId: string;
+  role: string;
+  joinedAt: string;
+};
+export type AddMemberToBoardResponseType = {
+  message: string;
+  newMember: AddedBoardMemberType;
+};
