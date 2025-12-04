@@ -31,14 +31,24 @@ function BoardMembersList() {
 
   return (
     <div>
-      {isFetching && <MainLoader className="mt-5"></MainLoader>}
-      {boardMembers.map((boardMember) => (
-        <BoardMemberCard
-          boardMember={boardMember}
-          boardRoles={boardRoles}
-          key={boardMember._id}
-        ></BoardMemberCard>
-      ))}
+      {isFetching ? (
+        <MainLoader className="mt-5"></MainLoader>
+      ) : (
+        <>
+          {boardMembers.map((boardMember) => (
+            <BoardMemberCard
+              boardMember={boardMember}
+              boardRoles={boardRoles}
+              key={boardMember._id}
+            ></BoardMemberCard>
+          ))}
+        </>
+      )}
+      {!isFetching && boardMembers.length === 0 && (
+        <div className="text-center text-gray-text my-6">
+          "No members found"
+        </div>
+      )}
     </div>
   );
 }
