@@ -267,3 +267,60 @@ export const addMemberToBoardService = async (
 
   return { newMember };
 };
+
+export const getBoardMembersService = async (
+  workspaceId: string,
+  boardId: string
+) => {
+  const board = await BoardModel.findOne({
+    _id: boardId,
+    workspace: workspaceId,
+  });
+  if (!board) {
+    throw new NotFoundException(
+      "Board not found or does not belong to the specified workspace"
+    );
+  }
+  const boardMembers = await BoardMemberModel.find({ boardId })
+    .populate("userId", "name email profilePicture -password")
+    .populate("role", "name");
+  const boardRoles = await BoardRoleModel.find({}, { name: 1, _id: 1 });
+  return { boardMembers, boardRoles };
+};
+
+export const changeBoardMemberRoleService = async (
+  workspaceId: string,
+  boardId: string,
+  userId: string,
+  roleId: string
+) => {
+  const board = await BoardModel.findOne({
+    _id: boardId,
+    workspace: workspaceId,
+  });
+  if (!board) {
+    throw new NotFoundException(
+      "Board not found or does not belong to the specified workspace"
+    );
+  }
+  const workspaceMember = await WorkspaceMemberModel.findOne({
+    userId: userId,
+    workspaceId: workspaceId,
+  });
+  if (!workspaceMember) {
+    throw new ForbiddenException("You are not a member of this workspace");
+  }
+  const boardRole = await BoardRoleModel.findById(roleId);
+  if (!boardRole) throw new NotFoundException("Board Role not found");
+  const updatedBoardMember = await BoardMemberModel.findOneAndUpdate(
+    {
+      workspaceMemberId: workspaceMember._id,
+      boardId,
+    },
+    { role: boardRole._id },
+    { new: true }
+  )
+    .populate("role", "_id name")
+    .lean();
+  return { updatedBoardMember };
+};

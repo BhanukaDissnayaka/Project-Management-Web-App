@@ -40,3 +40,8 @@ export const addMemberToBoardSchema = z.object({
       message: "Invalid user ID",
     }),
 });
+
+export const changeBoardMemberRoleSchema = z.object({
+  roleId: z.string().trim().min(1, { message: "role id is required" }),
+  userId: z.string().trim().min(1, { message: "user id is required" }),
+});
