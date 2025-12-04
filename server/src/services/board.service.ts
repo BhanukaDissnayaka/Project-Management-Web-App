@@ -204,7 +204,8 @@ export const getAvailableMembersService = async (
     boardMembers.map((m) => String(m.workspaceMemberId))
   );
   const result = workspaceMembers.map((wm) => ({
-    _id: wm.userId._id,
+    _id: wm._id,
+    userId: wm.userId._id,
     name: wm.userId.name,
     email: wm.userId.email,
     avatar: wm.userId.profilePicture,
