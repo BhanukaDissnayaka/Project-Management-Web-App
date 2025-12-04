@@ -12,6 +12,14 @@ export const bgColorSchema = z
   .nativeEnum(BoardColor, { message: "Invalid background color" })
   .optional();
 
+export const boardIdSchema = z
+  .string()
+  .trim()
+  .min(1, { message: "Board ID is required" })
+  .refine((val) => isValidObjectId(val), {
+    message: "Invalid Board ID",
+  });
+
 export const createBoardSchema = z.object({
   name: boardNameSchema,
   description: boardDescriptionSchema,

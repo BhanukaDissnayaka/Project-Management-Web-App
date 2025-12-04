@@ -1,11 +1,9 @@
 import { asyncHandler } from "../middlewares/asyncHandler";
 import { Request, Response } from "express";
-import {
-  boardIdSchema,
-  workspaceIdSchema,
-} from "../validation/workspace.validation";
+import { workspaceIdSchema } from "../validation/workspace.validation";
 import {
   addMemberToBoardSchema,
+  boardIdSchema,
   createBoardSchema,
   updateBoardSchema,
 } from "../validation/board.validation";

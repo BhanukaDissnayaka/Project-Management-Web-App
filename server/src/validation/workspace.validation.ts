@@ -52,11 +52,3 @@ export const updateWorkspaceSchema = z.object({
   name: nameSchema,
   description: descriptionSchema,
 });
-
-export const boardIdSchema = z
-  .string()
-  .trim()
-  .min(1, { message: "Board ID is required" })
-  .refine((val) => isValidObjectId(val), {
-    message: "Invalid Board ID",
-  });
