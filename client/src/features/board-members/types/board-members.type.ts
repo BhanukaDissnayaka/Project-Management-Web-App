@@ -63,3 +63,22 @@ export type GetBoardMembersResponseType = {
   boardMembers: BoardMemberType[];
   boardRoles: BoardRoleType[];
 };
+export type ChangeBoardMemberRoleType = {
+  userId: string;
+  roleId: string;
+  workspaceId: string;
+  boardId: string;
+};
+export type ChangeBoardMemberRoleResponseType = {
+  message: string;
+  updatedBoardMember: {
+    _id: string;
+    workspaceMemberId: string;
+    userId: string;
+    boardId: string;
+    role: {
+      _id: string;
+      name: string;
+    };
+  };
+};
