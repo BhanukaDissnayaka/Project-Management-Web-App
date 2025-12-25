@@ -4,6 +4,7 @@ export interface CardListDocument extends Document {
   title: string;
   description: string;
   boardId: Types.ObjectId;
+  workspaceId: Types.ObjectId;
   position: number;
   createdBy: Types.ObjectId;
   isArchived: boolean;
@@ -28,6 +29,11 @@ const cardListSchema = new Schema<CardListDocument>(
       ref: "Board",
       required: true,
       index: true,
+    },
+    workspaceId: {
+      type: Schema.Types.ObjectId,
+      ref: "Workspace",
+      required: true,
     },
     position: {
       type: Number,
