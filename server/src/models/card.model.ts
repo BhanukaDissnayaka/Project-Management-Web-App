@@ -11,6 +11,7 @@ export interface CardDocument extends Document {
   description?: string;
   boardId: Types.ObjectId;
   listId: Types.ObjectId;
+  workspaceId: Types.ObjectId;
   position: number;
   dueDate?: Date;
   priority: CardPriorityType;
@@ -45,6 +46,11 @@ const cardSchema = new Schema<CardDocument>(
       ref: "CardList",
       required: true,
       index: true,
+    },
+    workspaceId: {
+      type: Schema.Types.ObjectId,
+      ref: "Workspace",
+      required: true,
     },
     position: {
       type: Number,
