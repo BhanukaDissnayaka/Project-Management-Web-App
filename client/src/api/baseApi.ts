@@ -13,6 +13,7 @@ export const baseApi = createApi({
     "Board",
     "AvailbleWorkspaceMembers",
     "BoardMember",
+    "CardList",
   ],
   endpoints: () => ({}),
 });
