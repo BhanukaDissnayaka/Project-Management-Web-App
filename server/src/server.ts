@@ -11,6 +11,7 @@ import isAuthenticated from "./middlewares/isAuthenticated.middleware";
 import userRoutes from "./routes/user.route";
 import workspaceRoutes from "./routes/workspace.route";
 import boardRoutes from "./routes/board.route";
+import cardRoutes from "./routes/card-list.route";
 
 const app = express();
 const BASE_PATH = config.BASE_PATH;
@@ -35,6 +36,11 @@ app.use(
   `${BASE_PATH}/workspace/:workspaceId/boards`,
   isAuthenticated,
   boardRoutes
+);
+app.use(
+  `${BASE_PATH}/workspace/:workspaceId/boards/:boardId/lists`,
+  isAuthenticated,
+  cardRoutes
 );
 // global error handler - must be last
 app.use(errorHandler);
