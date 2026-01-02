@@ -16,11 +16,15 @@ export const WorkspacePermissions = {
 export type WorkspacePermissionsType = keyof typeof WorkspacePermissions;
 
 export const BoardPermissions = {
+  VIEW_BOARD: "VIEW_BOARD",
   EDIT_BOARD: "EDIT_BOARD",
+
+  VIEW_BOARD_MEMBERS: "VIEW_BOARD_MEMBERS",
   ADD_BOARD_MEMBER: "ADD_BOARD_MEMBER",
   CHANGE_BOARD_MEMBER_ROLE: "CHANGE_BOARD_MEMBER_ROLE",
   REMOVE_BOARD_MEMBER: "REMOVE_BOARD_MEMBER",
 
+  VIEW_LIST: "VIEW_LIST",
   CREATE_LIST: "CREATE_LIST",
   EDIT_LIST: "EDIT_LIST",
   DELETE_LIST: "DELETE_LIST",
