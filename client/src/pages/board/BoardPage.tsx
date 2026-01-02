@@ -1,12 +1,12 @@
 import BoardSettingsDialog from "@/features/board/components/BoardSettingDialog";
-import CreateListCard from "@/features/card-list/components/CreateCardList";
+import CardListGrid from "@/features/card-list/components/CardListGrid";
 
 function BoardPage() {
   return (
-    <div className="flex">
+    <div className="">
       <BoardSettingsDialog />
       Board Page
-      <CreateListCard></CreateListCard>
+      <CardListGrid />
     </div>
   );
 }
