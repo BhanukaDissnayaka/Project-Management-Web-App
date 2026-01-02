@@ -9,10 +9,13 @@ export const BoardRolePermissions: Record<
   Array<BoardPermissionType>
 > = {
   BOARD_ADMIN: [
+    BoardPermissions.VIEW_BOARD,
     BoardPermissions.EDIT_BOARD,
+    BoardPermissions.VIEW_BOARD_MEMBERS,
     BoardPermissions.ADD_BOARD_MEMBER,
     BoardPermissions.CHANGE_BOARD_MEMBER_ROLE,
     BoardPermissions.REMOVE_BOARD_MEMBER,
+    BoardPermissions.VIEW_LIST,
     BoardPermissions.CREATE_LIST,
     BoardPermissions.EDIT_LIST,
     BoardPermissions.DELETE_LIST,
@@ -30,6 +33,9 @@ export const BoardRolePermissions: Record<
     BoardPermissions.ASSIGN_CHECKITEM_TO_CARD_MEMBER,
   ],
   BOARD_MEMBER: [
+    BoardPermissions.VIEW_BOARD,
+    BoardPermissions.VIEW_BOARD_MEMBERS,
+    BoardPermissions.VIEW_LIST,
     BoardPermissions.CREATE_LIST,
     BoardPermissions.EDIT_LIST,
     BoardPermissions.DELETE_LIST,
