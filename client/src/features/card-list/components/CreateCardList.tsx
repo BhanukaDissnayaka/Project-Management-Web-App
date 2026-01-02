@@ -54,14 +54,14 @@ const CreateListCard: React.FC = () => {
     <div>
       <div
         ref={cardRef}
-        className={`w-full bg-sidebar-primary-foreground rounded-lg shadow-md   ${
+        className={`w-full bg-card rounded-lg shadow-md   ${
           isExpanded ? "max-w-md p-6" : "w-64 "
         }`}
       >
         {!isExpanded ? (
           <button
             onClick={() => setIsExpanded(true)}
-            className="w-full p-4  flex items-center justify-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+            className="w-full p-4  flex items-center justify-center gap-2 text-foreground hover:text-gray-400 transition-colors cursor-pointer"
           >
             <Plus className="w-5 h-5" />
             <span className="font-medium">Create New List</span>
