@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateListMutation } from "../api/list.api";
-import { isFetchBaseQueryError } from "@/utils/errorGuards";
-import { showErrorToast, showSuccessToast } from "@/lib/toastHandler";
 import useWorkspaceId from "@/hooks/useWorkspaceId";
 import useBoardId from "@/hooks/useBoardId";
 
@@ -20,29 +18,16 @@ const CreateListCard: React.FC = () => {
   const [createList, { isLoading }] = useCreateListMutation();
 
   const handleCreate = async () => {
-    try {
-      const body = { title, description, position: 0 };
-      const res = await createList({
-        workspaceId,
-        boardId,
-        body,
-      }).unwrap();
-      showSuccessToast(res.message || "List created successfully");
-      setTitle("");
-      setDescription("");
-      setIsExpanded(false);
-    } catch (err) {
-      if (isFetchBaseQueryError(err)) {
-        if (
-          typeof err.data === "object" &&
-          err.data !== null &&
-          "message" in err.data
-        ) {
-          const message = (err.data as { message: string }).message;
-          showErrorToast(message || "Board create failed");
-        }
-      }
-    }
+    const body = { title, description, position: 0 };
+    setTitle("");
+    setDescription("");
+    setIsExpanded(false);
+    await createList({
+      workspaceId,
+      boardId,
+      body,
+    });
+    // errors are handled in the mutation
   };
 
   useEffect(() => {
@@ -69,7 +54,7 @@ const CreateListCard: React.FC = () => {
     <div>
       <div
         ref={cardRef}
-        className={`bg-sidebar-primary-foreground rounded-lg shadow-md   ${
+        className={`w-full bg-sidebar-primary-foreground rounded-lg shadow-md   ${
           isExpanded ? "max-w-md p-6" : "w-64 "
         }`}
       >
