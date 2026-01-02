@@ -36,3 +36,20 @@ export const createCardListService = async (
   await cardList.save();
   return { cardList };
 };
+export const getCardListsInBoardService = async (
+  workspaceId: string,
+  boardId: string
+) => {
+  const board = await BoardModel.findOne({
+    _id: boardId,
+    workspace: workspaceId,
+  });
+
+  if (!board) {
+    throw new NotFoundException(
+      "Board not found or does not belong to the specified workspace"
+    );
+  }
+  const cardLists = await CardListModel.find({ boardId }).sort({ position: 1 });
+  return { cardLists };
+};
