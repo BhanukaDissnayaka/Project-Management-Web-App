@@ -12,3 +12,20 @@ export const createCardListSchema = z.object({
   title: cardListTitleSchema,
   description: cardListDescriptionSchema,
 });
+
+export const cardListIdSchema = z
+  .string()
+  .trim()
+  .min(1, { message: "Card List ID is required" })
+  .refine((val) => isValidObjectId(val), {
+    message: "Invalid Card List ID",
+  });
+
+export const updateCardListSchema = z
+  .object({
+    title: cardListTitleSchema.optional(),
+    description: cardListDescriptionSchema,
+  })
+  .refine((data) => Object.keys(data).length > 0, {
+    message: "At least one field must be updated",
+  });
