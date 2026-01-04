@@ -4,6 +4,8 @@ import type {
   CreateListType,
   GetListsInBoardResponseType,
   GetListsInBoardType,
+  UpdateListResponseType,
+  UpdateListType,
 } from "../types/list.type";
 import { showErrorToast } from "@/lib/toastHandler";
 
@@ -66,7 +68,42 @@ export const listApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    updateList: builder.mutation<UpdateListResponseType, UpdateListType>({
+      query: ({ workspaceId, boardId, listId, body }) => ({
+        url: `workspace/${workspaceId}/boards/${boardId}/lists/${listId}/update`,
+        method: "PUT",
+        body,
+      }),
+      async onQueryStarted(
+        { workspaceId, boardId, listId, body },
+        { dispatch, queryFulfilled }
+      ) {
+        const patchResult = dispatch(
+          listApi.util.updateQueryData(
+            "getListsInBoard",
+            { workspaceId, boardId },
+            (draft) => {
+              const list = draft.cardLists.find((list) => list._id === listId);
+              if (list) {
+                list.title = body.title ?? list.title;
+                list.description = body.description ?? list.description;
+              }
+            }
+          )
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+          showErrorToast("Failed to update list. Please try again.");
+        }
+      },
+    }),
   }),
 });
 
-export const { useCreateListMutation, useGetListsInBoardQuery } = listApi;
+export const {
+  useCreateListMutation,
+  useGetListsInBoardQuery,
+  useUpdateListMutation,
+} = listApi;

@@ -27,3 +27,13 @@ export type GetListsInBoardResponseType = {
   message: string;
   cardLists: CardListType[];
 };
+export type UpdateListType = {
+  workspaceId: string;
+  boardId: string;
+  listId: string;
+  body: { title?: string; description?: string };
+};
+export type UpdateListResponseType = {
+  message: string;
+  cardList: CardListType;
+};
