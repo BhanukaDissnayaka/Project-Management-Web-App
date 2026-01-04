@@ -22,7 +22,12 @@ export const errorHandler: ErrorRequestHandler = (
   res,
   next
 ): any => {
-  console.error(`Error Occured on PATH: ${req.path} `, error);
+  console.error("Error Occured:", {
+    path: req.path,
+    name: error?.name,
+    message: error?.message,
+    stack: error?.stack,
+  });
 
   if (error instanceof SyntaxError) {
     return res.status(HTTPSTATUS.BAD_REQUEST).json({
